@@ -15,12 +15,12 @@ struct SettingsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            section("Ollama-Server") {
-                Toggle("Lokaler Server (127.0.0.1)", isOn: $settings.useLocal)
+            section("Ollama Server") {
+                Toggle("Local server (127.0.0.1)", isOn: $settings.useLocal)
 
                 if !settings.useLocal {
                     Divider()
-                    TextField("Host oder IP-Adresse", text: $settings.host)
+                    TextField("Host or IP address", text: $settings.host)
                         .textFieldStyle(.roundedBorder)
                         .disableAutocorrection(true)
                 }
@@ -42,10 +42,10 @@ struct SettingsView: View {
                 }
             }
 
-            section("Modell") {
-                Picker("Modell", selection: $settings.model) {
+            section("Model") {
+                Picker("Model", selection: $settings.model) {
                     if settings.model.isEmpty {
-                        Text("Kein Modell ausgewählt").tag("")
+                        Text("No model selected").tag("")
                     }
                     ForEach(availableModels) { model in
                         Text(model.name).tag(model.name)
@@ -62,7 +62,7 @@ struct SettingsView: View {
                         if isLoadingModels {
                             ProgressView().controlSize(.small)
                         } else {
-                            Label("Modelle aktualisieren", systemImage: "arrow.clockwise")
+                            Label("Refresh models", systemImage: "arrow.clockwise")
                         }
                     }
                     .disabled(isLoadingModels)
@@ -75,17 +75,17 @@ struct SettingsView: View {
                 }
             }
 
-            section("Bevorzugte Sprachen") {
-                Text("Erkennt die automatische Spracherkennung eine dieser beiden Sprachen, wird jeweils die andere als Zielsprache gewählt.")
+            section("Preferred languages") {
+                Text("When automatic detection recognizes one of these two languages, the other is selected as the target language.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
                 HStack {
-                    Text("Sprache 1")
+                    Text("Language 1")
                     Spacer()
-                    Picker("Sprache 1", selection: $settings.preferredLanguageA) {
+                    Picker("Language 1", selection: $settings.preferredLanguageA) {
                         ForEach(Language.all) { language in
-                            Text(language.name).tag(language.code)
+                            Text(language.displayName).tag(language.code)
                         }
                     }
                     .labelsHidden()
@@ -95,11 +95,11 @@ struct SettingsView: View {
                 Divider()
 
                 HStack {
-                    Text("Sprache 2")
+                    Text("Language 2")
                     Spacer()
-                    Picker("Sprache 2", selection: $settings.preferredLanguageB) {
+                    Picker("Language 2", selection: $settings.preferredLanguageB) {
                         ForEach(Language.all) { language in
-                            Text(language.name).tag(language.code)
+                            Text(language.displayName).tag(language.code)
                         }
                     }
                     .labelsHidden()
@@ -108,7 +108,7 @@ struct SettingsView: View {
             }
 
             section("Prompt") {
-                Text("Zusätzliche Anweisungen an das Modell (optional), z. B. zu Tonalität oder Terminologie.")
+                Text("Additional instructions for the model (optional), e.g. about tone or terminology.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
@@ -123,7 +123,7 @@ struct SettingsView: View {
 
                 HStack {
                     Spacer()
-                    Button("Zurücksetzen") {
+                    Button("Reset") {
                         settings.customInstructions = ""
                     }
                     .disabled(settings.customInstructions.isEmpty)

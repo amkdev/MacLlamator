@@ -1,0 +1,303 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ (detected)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ (erkannt)"
+          }
+        }
+      }
+    },
+    "Additional instructions for the model (optional), e.g. about tone or terminology." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zusätzliche Anweisungen an das Modell (optional), z. B. zu Tonalität oder Terminologie."
+          }
+        }
+      }
+    },
+    "Clear text" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text löschen"
+          }
+        }
+      }
+    },
+    "Copy to clipboard" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In Zwischenablage kopieren"
+          }
+        }
+      }
+    },
+    "Detect language" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatisch erkennen"
+          }
+        }
+      }
+    },
+    "Enter text…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text eingeben…"
+          }
+        }
+      }
+    },
+    "Font" : {
+      "comment" : "Menu bar menu holding the text size commands",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schrift"
+          }
+        }
+      }
+    },
+    "Host or IP address" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Host oder IP-Adresse"
+          }
+        }
+      }
+    },
+    "Invalid server address." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ungültige Server-Adresse."
+          }
+        }
+      }
+    },
+    "Language 1" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache 1"
+          }
+        }
+      }
+    },
+    "Language 2" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache 2"
+          }
+        }
+      }
+    },
+    "Larger" : {
+      "comment" : "Increases the text size in both panes",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größer"
+          }
+        }
+      }
+    },
+    "Local server (127.0.0.1)" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokaler Server (127.0.0.1)"
+          }
+        }
+      }
+    },
+    "Model" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modell"
+          }
+        }
+      }
+    },
+    "No model selected" : {
+      "comment" : "Placeholder in the model picker when nothing is chosen yet",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Modell ausgewählt"
+          }
+        }
+      }
+    },
+    "No model selected." : {
+      "comment" : "Error shown when a translation is attempted without a model",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Modell ausgewählt."
+          }
+        }
+      }
+    },
+    "Ollama Server" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ollama-Server"
+          }
+        }
+      }
+    },
+    "Port" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Port"
+          }
+        }
+      }
+    },
+    "Preferred languages" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bevorzugte Sprachen"
+          }
+        }
+      }
+    },
+    "Prompt" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prompt"
+          }
+        }
+      }
+    },
+    "Refresh models" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modelle aktualisieren"
+          }
+        }
+      }
+    },
+    "Reset" : {
+      "comment" : "Clears the custom prompt instructions",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurücksetzen"
+          }
+        }
+      }
+    },
+    "Server responded with status %lld." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Server antwortete mit Status %lld."
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen"
+          }
+        }
+      }
+    },
+    "Smaller" : {
+      "comment" : "Decreases the text size in both panes",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kleiner"
+          }
+        }
+      }
+    },
+    "Swap languages" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprachen tauschen"
+          }
+        }
+      }
+    },
+    "The server's response could not be read." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antwort des Servers konnte nicht gelesen werden."
+          }
+        }
+      }
+    },
+    "Translation" : {
+      "comment" : "Placeholder in the read-only result pane",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersetzung"
+          }
+        }
+      }
+    },
+    "When automatic detection recognizes one of these two languages, the other is selected as the target language." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erkennt die automatische Spracherkennung eine dieser beiden Sprachen, wird jeweils die andere als Zielsprache gewählt."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

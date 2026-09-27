@@ -13,7 +13,7 @@ struct TranslationPaneView: View {
 
     @Binding var text: String
     var isEditable: Bool
-    var placeholder: String
+    var placeholder: LocalizedStringKey
     var isLoading: Bool = false
     var onClear: (() -> Void)? = nil
 
@@ -57,7 +57,7 @@ struct TranslationPaneView: View {
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(.secondary)
-                    .help("Text löschen")
+                    .help("Clear text")
                 }
 
                 Button {
@@ -68,7 +68,7 @@ struct TranslationPaneView: View {
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
                 .disabled(text.isEmpty)
-                .help("In Zwischenablage kopieren")
+                .help("Copy to clipboard")
             }
             .padding(12)
         }

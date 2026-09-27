@@ -15,9 +15,10 @@ Two panes side by side, translation as you type, and a menu bar icon to summon i
 ## Features
 
 - **Translate as you type.** Input is debounced by 500 ms and each new request cancels the previous one, so a fast typist triggers one translation instead of twenty.
-- **Automatic source-language detection.** The model reports an ISO 639-1 code alongside the translation; the detected language is shown in the source picker (`German (erkannt)`).
+- **Automatic source-language detection.** The model reports an ISO 639-1 code alongside the translation; the detected language is shown in the source picker (`German (detected)`).
 - **A preferred language pair.** Pick two languages in Settings — when detection recognizes one of them, the other is selected as the target automatically. Typing German gives you English, typing English gives you German, with no menu fiddling.
-- **20 target languages**, from German and English through Japanese, Korean, Chinese and Arabic.
+- **20 target languages**, from German and English through Japanese, Korean, Chinese and Arabic. Language names in the pickers come from macOS itself, so they appear in whatever language your system is set to.
+- **English and German interface.** The app follows your system language and falls back to English everywhere else.
 - **Swap direction** with one button, which also moves the current translation into the input pane so you can keep going.
 - **Lives in the menu bar.** Click the status item to show or hide the window. Closing the window hides it rather than tearing it down, so the next click brings back exactly what you had.
 - **Copy and clear** buttons per pane. The result pane is read-only but stays fully selectable — it is a plain `NSTextView` rather than a disabled `TextEditor`, precisely so that selecting and copying keeps working.
@@ -100,7 +101,7 @@ Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>.
 | Preferred languages | German / English | The pair that auto-detection flips between |
 | Prompt instructions | empty | Appended to every translation prompt |
 
-Everything is stored in `UserDefaults` under the `ollama.*` and `editor.*` keys. Use **Modelle aktualisieren** in Settings to re-read the model list after pulling something new.
+Everything is stored in `UserDefaults` under the `ollama.*` and `editor.*` keys. Use **Refresh models** in Settings to re-read the model list after pulling something new.
 
 ## Keyboard shortcuts
 
@@ -125,7 +126,11 @@ LANG:de
 TEXT:the translated text
 ```
 
-which the app parses to fill both the translation and the detected-language badge. If a model ignores the format, the whole response is treated as the translation and detection is simply skipped.
+which the app parses to fill both the translation and the detected-language badge.
+
+If a model ignores the format, the whole response is treated as the translation and detection is simply skipped.
+
+Language names inside the prompt are always English ("translate into German"), independent of the interface language — running the app in German must not change what the model is asked to do.
 
 ## Project structure
 
@@ -134,6 +139,7 @@ MacLlamator/
 ├── MacLlamatorApp.swift        App entry, scene and font commands
 ├── AppDelegate.swift           Menu bar item, window show/hide behaviour
 ├── ContentView.swift           Two-pane layout, language bar, translation flow
+├── Localizable.xcstrings       String catalog (English source, German translations)
 ├── Models/
 │   ├── Language.swift          Supported languages, "auto" pseudo-language
 │   ├── OllamaSettings.swift    Server, model and prompt settings
@@ -149,7 +155,6 @@ MacLlamator/
 
 Worth knowing before you try it:
 
-- **The interface is German only.** Labels, placeholders and error messages are not yet localized, even though this README is in English. The translation itself of course works between all supported languages.
 - **No streaming.** The translation appears when the model is done rather than word by word, so long inputs sit on a spinner for a while.
 - **No history.** Closing the window keeps the current text, quitting the app discards it.
 - **No tests yet.**

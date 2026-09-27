@@ -41,7 +41,7 @@ struct ContentView: View {
                 TranslationPaneView(
                     text: $sourceText,
                     isEditable: true,
-                    placeholder: "Text eingeben…",
+                    placeholder: "Enter text…",
                     onClear: { sourceText = "" }
                 )
 
@@ -50,7 +50,7 @@ struct ContentView: View {
                 TranslationPaneView(
                     text: $translatedText,
                     isEditable: false,
-                    placeholder: "Übersetzung",
+                    placeholder: "Translation",
                     isLoading: isTranslating
                 )
             }
@@ -63,7 +63,7 @@ struct ContentView: View {
                 } label: {
                     Image(systemName: "gearshape")
                 }
-                .help("Einstellungen")
+                .help("Settings")
             }
         }
         .onChange(of: sourceText) { _, newValue in
@@ -97,12 +97,12 @@ struct ContentView: View {
             }
             .buttonStyle(.plain)
             .disabled(effectiveSourceLanguage == nil)
-            .help("Sprachen tauschen")
+            .help("Swap languages")
             .padding(.horizontal, 16)
 
             languageMenu(
                 selection: targetLanguage,
-                displayName: targetLanguage.name,
+                displayName: targetLanguage.displayName,
                 options: Language.all
             ) { targetLanguage = $0 }
             .frame(maxWidth: .infinity, alignment: .trailing)
@@ -118,9 +118,9 @@ struct ContentView: View {
     }
 
     private var sourceDisplayName: String {
-        guard sourceLanguage == .auto else { return sourceLanguage.name }
-        guard let detectedLanguage else { return sourceLanguage.name }
-        return "\(detectedLanguage.name) (erkannt)"
+        guard sourceLanguage == .auto else { return sourceLanguage.displayName }
+        guard let detectedLanguage else { return sourceLanguage.displayName }
+        return String(localized: "\(detectedLanguage.displayName) (detected)")
     }
 
     private func languageMenu(
@@ -135,9 +135,9 @@ struct ContentView: View {
                     onSelect(language)
                 } label: {
                     if language == selection {
-                        Label(language.name, systemImage: "checkmark")
+                        Label(language.displayName, systemImage: "checkmark")
                     } else {
-                        Text(language.name)
+                        Text(language.displayName)
                     }
                 }
             }

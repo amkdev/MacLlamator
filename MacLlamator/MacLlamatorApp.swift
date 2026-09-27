@@ -21,10 +21,10 @@ struct MacLlamatorApp: App {
                 .environmentObject(fontSettings)
         }
         .commands {
-            CommandMenu("Schrift") {
-                Button("Größer") { fontSettings.increase() }
+            CommandMenu("Font") {
+                Button("Larger") { fontSettings.increase() }
                     .keyboardShortcut("+", modifiers: .command)
-                Button("Kleiner") { fontSettings.decrease() }
+                Button("Smaller") { fontSettings.decrease() }
                     .keyboardShortcut("-", modifiers: .command)
             }
         }
