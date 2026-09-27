@@ -55,7 +55,9 @@ ollama pull aya              # recommended, see below
 
 **Recommended model: [`aya`](https://ollama.com/library/aya)** (8B, roughly 4.8 GB). Aya is built specifically for multilingual work, which is exactly what this app does, and it stays comfortable on an M1 — it is the model MacLlamator has been developed and tested against.
 
-Any instruction-following model will work, and larger ones follow the requested output format more reliably. If a model ignores the `LANG:`/`TEXT:` structure entirely, the app degrades gracefully: you still get the translation, just without the detected-language badge. See [Known issues](#known-issues) for one case where model behaviour is visible in practice.
+One caveat worth knowing up front: with `aya`, texts longer than a few hundred characters need the source language set explicitly rather than left on automatic detection. See [Known issues](#known-issues). If you would rather not think about that, [`llama3.1:8b`](https://ollama.com/library/llama3.1) is the same size and does not show the problem.
+
+Any instruction-following model will work, and model size turns out to be a poor predictor of how well one copes with the app's prompts — see the [tested models](#tested-models) table. If a model ignores the `LANG:`/`TEXT:` structure entirely, the app degrades gracefully: you still get the translation, just without the detected-language badge.
 
 ## Installation
 
@@ -184,13 +186,36 @@ MacLlamator/
 
 ## Known issues
 
-**Longer text can come back untranslated while the source language is set to automatic.**
+**With `aya`, longer text can come back untranslated while the source language is set to automatic.**
 
-With automatic detection the app asks the model to do two things in one request: identify the language *and* translate. On longer input a small model can get the first half right and the second half wrong — it emits the correct language code and then returns the source text verbatim instead of a translation. Since the result pane then shows the original wording, it looks as if detection had failed, when detection was in fact correct and the translation step was the part that got skipped.
+On automatic detection the app asks the model to do two things in one request: identify the language *and* translate. `aya` gets the first half right and the second half wrong — it emits the correct language code and then returns the source text verbatim instead of a translation. Since the result pane shows the original wording, it looks as if detection had failed, when detection was correct and the translation step was the part that got skipped.
 
-**Workaround:** pick the source language explicitly instead of leaving it on *Detect language*. That switches the app to a single-task prompt, which is markedly more robust.
+**Workaround:** pick the source language explicitly instead of leaving it on *Detect language*. That switches the app to a single-task prompt, which `aya` handles correctly at any length.
 
-Measured against `aya:8b` with a 1,079-character German text: the detection prompt returned the source untranslated in 2 of 2 runs, while the explicit-source prompt translated correctly in 2 of 2 runs. Rewording the prompt changed nothing, so the cause is the combined detect-and-translate request rather than any particular phrasing. The real fix is to split it into two requests — not implemented yet.
+This is specific to `aya`, not a general property of small models. Measured with a German text at four lengths, two runs each:
+
+| Input length | Result on automatic detection |
+|---|---|
+| 130 characters | translated correctly, 2 of 2 |
+| 391 characters | translated correctly 1 of 2 — the tipping point |
+| 774 characters | returned untranslated, 2 of 2 |
+| 1,079 characters | returned untranslated, 2 of 2 |
+
+Every other model tested handled the same 1,079-character text correctly on automatic detection, including a 4B model at roughly half `aya`'s size. Rewording the prompt did not help, so the cause is `aya`'s handling of the combined detect-and-translate request. The fix is to split it into two requests, or to detect the language on-device instead of asking the model — neither is implemented yet.
+
+### Tested models
+
+All of these translate correctly with an explicit source language. The difference is only in the automatic-detection path, on the 1,079-character text:
+
+| Model | Size | Automatic detection |
+|---|---|---|
+| `aya:8b` | 4.8 GB | ✗ returns the source untranslated |
+| `llama3.1:8b` | 4.9 GB | ✓ |
+| `mistral-nemo:12b` | 7.1 GB | ✓ |
+| `qwen2.5:14b` | 9.0 GB | ✓ |
+| `gemma2:27b` (q3_K_M) | 13.4 GB | ✓ |
+| `deepseek-r1:8b` | 5.2 GB | ✓ |
+| `qwen3-abliterated:4b` | 2.5 GB | ✓ (community build, listed for the size comparison) |
 
 ## Current limitations
 
