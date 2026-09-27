@@ -19,7 +19,7 @@ Two panes side by side, translation as you type, and a menu bar icon to summon i
 
 - **Translate as you type.** Input is debounced by 500 ms and each new request cancels the previous one, so a fast typist triggers one translation instead of twenty.
 - **Menu bar icon for instant access.** A status item sits in the macOS menu bar: one click brings the window up over whatever you are working in, another puts it away. Closing the window hides it instead of tearing it down, so the next click returns exactly what you had — text included.
-- **Automatic source-language detection, on-device.** Apple's `NLLanguageRecognizer` identifies the language locally, and the result appears in the source picker (`German (detected)`). The model is never asked to detect and translate in one go, which is what used to go wrong. Input too ambiguous to call keeps the previous detection instead of being guessed at.
+- **Automatic source-language detection, on-device.** Apple's `NLLanguageRecognizer` identifies the language locally rather than making the model detect and translate in one request, and the result appears in the source picker (`German (detected)`). Input too ambiguous to call keeps the previous detection instead of being guessed at, and a translation that comes back in the source language is flagged rather than passed off as one.
 - **A preferred language pair.** Pick two languages in Settings — when detection recognizes one of them, the other is selected as the target automatically. Typing German gives you English, typing English gives you German, with no menu fiddling.
 - **20 target languages**, from German and English through Japanese, Korean, Chinese and Arabic. Language names in the pickers come from macOS itself, so they appear in whatever language your system is set to.
 - **English and German interface.** The app follows your system language and falls back to English everywhere else.
@@ -157,16 +157,16 @@ MacLlamator talks to two Ollama endpoints over plain HTTP:
 - `GET /api/tags` — to list the models installed on the server.
 - `POST /api/generate` — to translate, with `stream: false` and `temperature: 0.2` for predictable output.
 
-When the source language is set to automatic, the prompt asks the model to answer in a two-line format:
+The source language is identified on-device first, so the model is asked to do one job: translate from a named language into another. That single-task prompt is the one every model tested handles reliably.
+
+Only when the text is still too short or ambiguous to identify does the app fall back to letting the model detect the language itself, asking for a two-line reply:
 
 ```
 LANG:de
 TEXT:the translated text
 ```
 
-which the app parses to fill both the translation and the detected-language badge.
-
-If a model ignores the format, the whole response is treated as the translation and detection is simply skipped.
+If a model ignores that format, the whole response is treated as the translation and the detected-language badge is simply left empty.
 
 Language names inside the prompt are always English ("translate into German"), independent of the interface language — running the app in German must not change what the model is asked to do.
 
@@ -182,12 +182,6 @@ Compared on a German administrative text, a colloquial idiom, an English→Germa
 | `qwen2.5:14b` | 9.0 GB | The only one to get the idiom's *meaning* right, though with awkward word order. Too large for a 5 GB budget |
 
 **None of the small models handles German idioms.** Given *Das ist mir Wurst*, `aya` produced fluent English with the wrong meaning ("not my cup of tea"), while the others went literal ("That's really sausage to me"). Expect idioms to need a human pass whichever model you pick.
-
-### A note on automatic detection
-
-Earlier versions asked the model to identify the language and translate in one request. `aya` answered that by reporting the language correctly and then returning the source text verbatim — reliably above roughly 750 characters, intermittently from about 400. Every other model tested handled the same request, so this was never a matter of model size.
-
-Detection now runs on-device through `NLLanguageRecognizer`, and the model only ever receives the single-task prompt that all tested models get right. Verified against the same 1,079-character text that used to fail: untranslated in 2 of 2 runs before the change, correct in 2 of 2 after. As a backstop the app checks the language of the result and warns if a model hands back the source text anyway.
 
 ## Project structure
 
