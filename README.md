@@ -55,7 +55,9 @@ ollama pull aya              # recommended, see below
 
 **Recommended model: [`aya`](https://ollama.com/library/aya)** (8B, roughly 4.8 GB). Aya is built specifically for multilingual work, which is exactly what this app does, and it stays comfortable on an M1 — it is the model MacLlamator has been developed and tested against.
 
-One caveat worth knowing up front: with `aya`, texts longer than a few hundred characters need the source language set explicitly rather than left on automatic detection. See [Known issues](#known-issues). If you would rather not think about that, [`llama3.1:8b`](https://ollama.com/library/llama3.1) is the same size and does not show the problem.
+One caveat worth knowing up front: with `aya`, texts longer than a few hundred characters need the source language set explicitly rather than left on automatic detection. See [Known issues](#known-issues).
+
+That caveat is worth accepting. Other models of the same size clear the automatic-detection hurdle but translate worse — see [tested models](#tested-models). `aya` stays the recommendation because the detection problem is fixable in the app, while the alternatives' weaknesses are inherent to the models.
 
 Any instruction-following model will work, and model size turns out to be a poor predictor of how well one copes with the app's prompts — see the [tested models](#tested-models) table. If a model ignores the `LANG:`/`TEXT:` structure entirely, the app degrades gracefully: you still get the translation, just without the detected-language badge.
 
@@ -205,17 +207,29 @@ Every other model tested handled the same 1,079-character text correctly on auto
 
 ### Tested models
 
-All of these translate correctly with an explicit source language. The difference is only in the automatic-detection path, on the 1,079-character text:
+Measured against a German administrative text, a colloquial sentence, an English→German paragraph, a German→French sentence and a deliberately incomplete fragment. The automatic-detection column uses the 1,079-character text.
 
-| Model | Size | Automatic detection |
-|---|---|---|
-| `aya:8b` | 4.8 GB | ✗ returns the source untranslated |
-| `llama3.1:8b` | 4.9 GB | ✓ |
-| `mistral-nemo:12b` | 7.1 GB | ✓ |
-| `qwen2.5:14b` | 9.0 GB | ✓ |
-| `gemma2:27b` (q3_K_M) | 13.4 GB | ✓ |
-| `deepseek-r1:8b` | 5.2 GB | ✓ |
-| `qwen3-abliterated:4b` | 2.5 GB | ✓ (community build, listed for the size comparison) |
+| Model | Size | Auto-detection | Translation quality |
+|---|---|---|---|
+| `aya:8b` | 4.8 GB | ✗ returns the source untranslated | **Best of the field.** Correct Konjunktiv I for reported speech in German, accurate French, never completed a fragment (3 of 3) |
+| `llama3.1:8b` | 4.9 GB | ✓ | **Weakest.** Completed a sentence fragment in 2 of 3 runs, produced broken German grammar, and rendered *Antrag* as *demandeur* ("the applicant must be submitted") in French |
+| `qwen3:4b` (community build) | 2.5 GB | ✓ | Good German→English, the only model to avoid the *Instanz* → *instance* false friend; clumsier in the other direction |
+| `qwen2.5:14b` | 9.0 GB | ✓ | Only model to get the idiom's *meaning* right, but with awkward word order. Too large for a 5 GB budget |
+| `mistral-nemo:12b` | 7.1 GB | ✓ | Not quality-tested |
+| `gemma2:27b` (q3_K_M) | 13.4 GB | ✓ | Not quality-tested |
+| `deepseek-r1:8b` | 5.2 GB | ✓ | A reasoning model, not intended for translation |
+
+**None of the small models handles German idioms.** Given *Das ist mir Wurst*, `aya` produced fluent English with the wrong meaning ("not my cup of tea"), while the others went literal ("That's really sausage to me"). Expect idioms to need a human pass regardless of which model you pick.
+
+### Keeping the first translation fast
+
+Ollama unloads a model from memory five minutes after its last use, so the first translation after a break waits for a reload. If you have the RAM to spare — `aya` occupies about 6.2 GB while loaded — keep it resident:
+
+```sh
+OLLAMA_KEEP_ALIVE=-1 ollama serve
+```
+
+On an M1 with 32 GB, a warm model answers a short phrase in about 0.1 s versus 1.9 s cold, and translates the 1,079-character text in roughly 5 s at 41 tokens per second.
 
 ## Current limitations
 
