@@ -4,9 +4,6 @@
 
 # MacLlamator
 
-> [!NOTE]
-> Written with [Claude Code](https://claude.com/claude-code) — the Swift sources, the Xcode project configuration and this README were all produced through Claude Code rather than written by hand.
-
 A native macOS translation app that runs entirely against your own [Ollama](https://ollama.com) server — no cloud service, no API key, no text leaving your machine.
 
 Two panes side by side, translation as you type, and a menu bar icon to summon it over whatever you are working in. Think DeepL's window, but the model is yours.
@@ -23,7 +20,7 @@ Two panes side by side, translation as you type, and a menu bar icon to summon i
 ## Features
 
 - **Translate as you type.** Input is debounced by 500 ms and each new request cancels the previous one, so a fast typist triggers one translation instead of twenty.
-- **Automatic source-language detection.** The model reports an ISO 639-1 code alongside the translation; the detected language is shown in the source picker (`German (detected)`).
+- **Automatic source-language detection, on-device.** Apple's `NLLanguageRecognizer` identifies the language locally, and the result appears in the source picker (`German (detected)`). The model is never asked to detect and translate in one go, which is what used to go wrong. Input too ambiguous to call keeps the previous detection instead of being guessed at.
 - **A preferred language pair.** Pick two languages in Settings — when detection recognizes one of them, the other is selected as the target automatically. Typing German gives you English, typing English gives you German, with no menu fiddling.
 - **20 target languages**, from German and English through Japanese, Korean, Chinese and Arabic. Language names in the pickers come from macOS itself, so they appear in whatever language your system is set to.
 - **English and German interface.** The app follows your system language and falls back to English everywhere else.
@@ -47,19 +44,26 @@ The app is sandboxed and requests outgoing network connections only. It reads an
 
 ### Setting up Ollama
 
+The simplest route is the **macOS app**: download it from [ollama.com/download](https://ollama.com/download) and drag it to `/Applications`. It runs as a menu bar item, starts the server on `127.0.0.1:11434` by itself, and installs the `ollama` command line tool along the way — so there is nothing to keep running in a terminal.
+
+If you prefer the command line only, Homebrew has it too:
+
 ```sh
-brew install ollama          # or download from ollama.com
-ollama serve                 # starts the server on 127.0.0.1:11434
+brew install ollama          # CLI only
+ollama serve                 # you start the server yourself
+```
+
+Either way, fetch a model once:
+
+```sh
 ollama pull aya              # recommended, see below
 ```
 
 **Recommended model: [`aya`](https://ollama.com/library/aya)** (8B, roughly 4.8 GB). Aya is built specifically for multilingual work, which is exactly what this app does, and it stays comfortable on an M1 — it is the model MacLlamator has been developed and tested against.
 
-One caveat worth knowing up front: with `aya`, texts longer than a few hundred characters need the source language set explicitly rather than left on automatic detection. See [Known issues](#known-issues).
+It earns that spot on translation quality — see [tested models](#tested-models), where the same-size alternatives come out measurably worse.
 
-That caveat is worth accepting. Other models of the same size clear the automatic-detection hurdle but translate worse — see [tested models](#tested-models). `aya` stays the recommendation because the detection problem is fixable in the app, while the alternatives' weaknesses are inherent to the models.
-
-Any instruction-following model will work, and model size turns out to be a poor predictor of how well one copes with the app's prompts — see the [tested models](#tested-models) table. If a model ignores the `LANG:`/`TEXT:` structure entirely, the app degrades gracefully: you still get the translation, just without the detected-language badge.
+Any instruction-following model will work, and size turns out to be a poor predictor of translation quality — see the [tested models](#tested-models) table.
 
 ## Installation
 
@@ -135,6 +139,7 @@ Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>.
 | Model | first one found | Populated from the server's installed models |
 | Preferred languages | German / English | The pair that auto-detection flips between |
 | Prompt instructions | empty | Appended to every translation prompt |
+| Keep model in memory | 30 minutes | How long Ollama holds the model after a request; *Until Ollama quits* never unloads it |
 
 Everything is stored in `UserDefaults` under the `ollama.*` and `editor.*` keys. Use **Refresh models** in Settings to re-read the model list after pulling something new.
 
@@ -167,6 +172,28 @@ If a model ignores the format, the whole response is treated as the translation 
 
 Language names inside the prompt are always English ("translate into German"), independent of the interface language — running the app in German must not change what the model is asked to do.
 
+## Tested models
+
+Compared on a German administrative text, a colloquial idiom, an English→German paragraph, a German→French sentence and a deliberately incomplete fragment:
+
+| Model | Size | Translation quality |
+|---|---|---|
+| `aya:8b` | 4.8 GB | **Best of the field.** Correct Konjunktiv I for reported speech in German, accurate French, and it left an incomplete fragment incomplete in 3 of 3 runs |
+| `llama3.1:8b` | 4.9 GB | **Weakest.** Completed a sentence fragment in 2 of 3 runs, which matters because the app translates as you type and every intermediate state is a fragment. Also produced broken German grammar and rendered *Antrag* as *demandeur* in French |
+| `qwen3:4b` (community build) | 2.5 GB | Good German→English, the only model to avoid the *Instanz* → *instance* false friend; clumsier in the other direction |
+| `qwen2.5:14b` | 9.0 GB | The only one to get the idiom's *meaning* right, though with awkward word order. Too large for a 5 GB budget |
+| `mistral-nemo:12b` | 7.1 GB | Not quality-tested |
+| `gemma2:27b` (q3_K_M) | 13.4 GB | Not quality-tested |
+| `deepseek-r1:8b` | 5.2 GB | A reasoning model, not intended for translation |
+
+**None of the small models handles German idioms.** Given *Das ist mir Wurst*, `aya` produced fluent English with the wrong meaning ("not my cup of tea"), while the others went literal ("That's really sausage to me"). Expect idioms to need a human pass whichever model you pick.
+
+### A note on automatic detection
+
+Earlier versions asked the model to identify the language and translate in one request. `aya` answered that by reporting the language correctly and then returning the source text verbatim — reliably above roughly 750 characters, intermittently from about 400. Every other model tested handled the same request, so this was never a matter of model size.
+
+Detection now runs on-device through `NLLanguageRecognizer`, and the model only ever receives the single-task prompt that all tested models get right. Verified against the same 1,079-character text that used to fail: untranslated in 2 of 2 runs before the change, correct in 2 of 2 after. As a backstop the app checks the language of the result and warns if a model hands back the source text anyway.
+
 ## Project structure
 
 ```
@@ -180,56 +207,12 @@ MacLlamator/
 │   ├── OllamaSettings.swift    Server, model and prompt settings
 │   └── EditorFontSettings.swift
 ├── Services/
+│   ├── LanguageDetector.swift  On-device language detection (NaturalLanguage)
 │   └── OllamaService.swift     HTTP client, prompt construction, parsing
 └── Views/
     ├── SettingsView.swift
     └── TranslationPaneView.swift
 ```
-
-## Known issues
-
-**With `aya`, longer text can come back untranslated while the source language is set to automatic.**
-
-On automatic detection the app asks the model to do two things in one request: identify the language *and* translate. `aya` gets the first half right and the second half wrong — it emits the correct language code and then returns the source text verbatim instead of a translation. Since the result pane shows the original wording, it looks as if detection had failed, when detection was correct and the translation step was the part that got skipped.
-
-**Workaround:** pick the source language explicitly instead of leaving it on *Detect language*. That switches the app to a single-task prompt, which `aya` handles correctly at any length.
-
-This is specific to `aya`, not a general property of small models. Measured with a German text at four lengths, two runs each:
-
-| Input length | Result on automatic detection |
-|---|---|
-| 130 characters | translated correctly, 2 of 2 |
-| 391 characters | translated correctly 1 of 2 — the tipping point |
-| 774 characters | returned untranslated, 2 of 2 |
-| 1,079 characters | returned untranslated, 2 of 2 |
-
-Every other model tested handled the same 1,079-character text correctly on automatic detection, including a 4B model at roughly half `aya`'s size. Rewording the prompt did not help, so the cause is `aya`'s handling of the combined detect-and-translate request. The fix is to split it into two requests, or to detect the language on-device instead of asking the model — neither is implemented yet.
-
-### Tested models
-
-Measured against a German administrative text, a colloquial sentence, an English→German paragraph, a German→French sentence and a deliberately incomplete fragment. The automatic-detection column uses the 1,079-character text.
-
-| Model | Size | Auto-detection | Translation quality |
-|---|---|---|---|
-| `aya:8b` | 4.8 GB | ✗ returns the source untranslated | **Best of the field.** Correct Konjunktiv I for reported speech in German, accurate French, never completed a fragment (3 of 3) |
-| `llama3.1:8b` | 4.9 GB | ✓ | **Weakest.** Completed a sentence fragment in 2 of 3 runs, produced broken German grammar, and rendered *Antrag* as *demandeur* ("the applicant must be submitted") in French |
-| `qwen3:4b` (community build) | 2.5 GB | ✓ | Good German→English, the only model to avoid the *Instanz* → *instance* false friend; clumsier in the other direction |
-| `qwen2.5:14b` | 9.0 GB | ✓ | Only model to get the idiom's *meaning* right, but with awkward word order. Too large for a 5 GB budget |
-| `mistral-nemo:12b` | 7.1 GB | ✓ | Not quality-tested |
-| `gemma2:27b` (q3_K_M) | 13.4 GB | ✓ | Not quality-tested |
-| `deepseek-r1:8b` | 5.2 GB | ✓ | A reasoning model, not intended for translation |
-
-**None of the small models handles German idioms.** Given *Das ist mir Wurst*, `aya` produced fluent English with the wrong meaning ("not my cup of tea"), while the others went literal ("That's really sausage to me"). Expect idioms to need a human pass regardless of which model you pick.
-
-### Keeping the first translation fast
-
-Ollama unloads a model from memory five minutes after its last use, so the first translation after a break waits for a reload. If you have the RAM to spare — `aya` occupies about 6.2 GB while loaded — keep it resident:
-
-```sh
-OLLAMA_KEEP_ALIVE=-1 ollama serve
-```
-
-On an M1 with 32 GB, a warm model answers a short phrase in about 0.1 s versus 1.9 s cold, and translates the 1,079-character text in roughly 5 s at 41 tokens per second.
 
 ## Current limitations
 

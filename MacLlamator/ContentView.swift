@@ -185,8 +185,18 @@ struct ContentView: View {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
             translatedText = ""
+            detectedLanguage = nil
             isTranslating = false
             return
+        }
+
+        // Detection is on-device and costs nothing, so it re-runs on every
+        // change instead of settling on a first guess. A low-confidence
+        // result leaves the previous detection standing rather than replacing
+        // it with a guess, which keeps the badge steady mid-sentence while
+        // still following a genuine switch of language.
+        if sourceLanguage == .auto, let detected = LanguageDetector.detect(trimmed) {
+            detectedLanguage = detected
         }
 
         translationTask = Task {
@@ -200,10 +210,16 @@ struct ContentView: View {
         isTranslating = true
         defer { isTranslating = false }
 
+        // Hand the model the language we detected rather than asking it to
+        // work that out as well: the single-task prompt is the one models get
+        // right. Falls back to .auto only when the text is still too short or
+        // ambiguous to call, in which case the model does the detecting.
+        let effectiveSource = effectiveSourceLanguage ?? .auto
+
         do {
             let result = try await service.translate(
                 text: text,
-                from: sourceLanguage,
+                from: effectiveSource,
                 to: targetLanguage,
                 settings: settings
             )
@@ -212,10 +228,26 @@ struct ContentView: View {
             if let detected = result.detectedLanguage {
                 detectedLanguage = detected
             }
+            warnIfUntranslated(result.translatedText, from: effectiveSource)
         } catch {
             guard !Task.isCancelled else { return }
             errorMessage = error.localizedDescription
         }
+    }
+
+    /// Catches the failure where a model returns the source text instead of a
+    /// translation. The result is still shown — it is simply flagged, rather
+    /// than passing silently for a translation the user might send onwards.
+    private func warnIfUntranslated(_ result: String, from source: Language) {
+        guard !source.isAuto,
+              source != targetLanguage,
+              let resultLanguage = LanguageDetector.detect(result),
+              resultLanguage == source
+        else { return }
+
+        errorMessage = String(
+            localized: "The model returned the text untranslated — try a shorter passage or another model."
+        )
     }
 }
 

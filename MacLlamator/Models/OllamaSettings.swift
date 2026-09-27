@@ -31,6 +31,15 @@ final class OllamaSettings: ObservableObject {
         didSet { UserDefaults.standard.set(customInstructions, forKey: Keys.customInstructions) }
     }
 
+    /// How long Ollama should keep the model in memory after a request, in
+    /// seconds; `-1` keeps it loaded until Ollama itself exits. Ollama's own
+    /// default is 300 seconds, after which the next translation waits for the
+    /// model to be reloaded. Must be sent as a number — the string "-1" is
+    /// rejected with HTTP 400.
+    @Published var keepAliveSeconds: Int {
+        didSet { UserDefaults.standard.set(keepAliveSeconds, forKey: Keys.keepAliveSeconds) }
+    }
+
     /// The two languages (as ISO codes) between which auto-detection should
     /// automatically flip the target language: detecting one of them selects
     /// the other as the target.
@@ -50,6 +59,7 @@ final class OllamaSettings: ObservableObject {
         static let customInstructions = "ollama.customInstructions"
         static let preferredLanguageA = "ollama.preferredLanguageA"
         static let preferredLanguageB = "ollama.preferredLanguageB"
+        static let keepAliveSeconds = "ollama.keepAliveSeconds"
     }
 
     init() {
@@ -61,7 +71,11 @@ final class OllamaSettings: ObservableObject {
         self.customInstructions = defaults.string(forKey: Keys.customInstructions) ?? ""
         self.preferredLanguageA = defaults.string(forKey: Keys.preferredLanguageA) ?? "de"
         self.preferredLanguageB = defaults.string(forKey: Keys.preferredLanguageB) ?? "en"
+        self.keepAliveSeconds = defaults.object(forKey: Keys.keepAliveSeconds) as? Int ?? 1800
     }
+
+    /// Offered in Settings. Seconds, with `-1` meaning "until Ollama exits".
+    static let keepAliveOptions: [Int] = [300, 1800, 3600, -1]
 
     /// Base URL of the Ollama server, respecting the "local" toggle.
     var baseURL: URL? {

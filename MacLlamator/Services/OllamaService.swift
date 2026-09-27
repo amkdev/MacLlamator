@@ -93,6 +93,7 @@ final class OllamaService {
             "prompt": prompt,
             "stream": false,
             "options": ["temperature": 0.2],
+            "keep_alive": settings.keepAliveSeconds,
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 

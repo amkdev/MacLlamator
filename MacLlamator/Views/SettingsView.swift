@@ -40,6 +40,24 @@ struct SettingsView: View {
                     .multilineTextAlignment(.trailing)
                     .frame(width: 120)
                 }
+
+                Divider()
+
+                HStack {
+                    Text("Keep model in memory")
+                    Spacer()
+                    Picker("Keep model in memory", selection: $settings.keepAliveSeconds) {
+                        ForEach(OllamaSettings.keepAliveOptions, id: \.self) { seconds in
+                            Text(Self.keepAliveLabel(seconds)).tag(seconds)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 160)
+                }
+
+                Text("Ollama unloads a model after five minutes by default, and the next translation then waits for it to be reloaded. A longer setting keeps it resident at the cost of the memory it occupies.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             section("Model") {
@@ -134,6 +152,16 @@ struct SettingsView: View {
         .frame(width: 420)
         .fixedSize(horizontal: false, vertical: true)
         .task { await loadModels() }
+    }
+
+    private static func keepAliveLabel(_ seconds: Int) -> String {
+        switch seconds {
+        case -1:   return String(localized: "Until Ollama quits")
+        case 300:  return String(localized: "5 minutes")
+        case 1800: return String(localized: "30 minutes")
+        case 3600: return String(localized: "1 hour")
+        default:   return "\(seconds) s"
+        }
     }
 
     @ViewBuilder
