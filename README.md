@@ -50,10 +50,12 @@ The app is sandboxed and requests outgoing network connections only. It reads an
 ```sh
 brew install ollama          # or download from ollama.com
 ollama serve                 # starts the server on 127.0.0.1:11434
-ollama pull llama3.1         # any instruction-following model works
+ollama pull aya              # recommended, see below
 ```
 
-Larger models follow the translation format more reliably. MacLlamator degrades gracefully if a model ignores the requested `LANG:`/`TEXT:` structure — you still get the translation, just without the detected-language badge.
+**Recommended model: [`aya`](https://ollama.com/library/aya)** (8B, roughly 4.8 GB). Aya is built specifically for multilingual work, which is exactly what this app does, and it stays comfortable on an M1 — it is the model MacLlamator has been developed and tested against.
+
+Any instruction-following model will work, and larger ones follow the requested output format more reliably. If a model ignores the `LANG:`/`TEXT:` structure entirely, the app degrades gracefully: you still get the translation, just without the detected-language badge. See [Known issues](#known-issues) for one case where model behaviour is visible in practice.
 
 ## Installation
 
@@ -179,6 +181,16 @@ MacLlamator/
     ├── SettingsView.swift
     └── TranslationPaneView.swift
 ```
+
+## Known issues
+
+**Longer text can come back untranslated while the source language is set to automatic.**
+
+With automatic detection the app asks the model to do two things in one request: identify the language *and* translate. On longer input a small model can get the first half right and the second half wrong — it emits the correct language code and then returns the source text verbatim instead of a translation. Since the result pane then shows the original wording, it looks as if detection had failed, when detection was in fact correct and the translation step was the part that got skipped.
+
+**Workaround:** pick the source language explicitly instead of leaving it on *Detect language*. That switches the app to a single-task prompt, which is markedly more robust.
+
+Measured against `aya:8b` with a 1,079-character German text: the detection prompt returned the source untranslated in 2 of 2 runs, while the explicit-source prompt translated correctly in 2 of 2 runs. Rewording the prompt changed nothing, so the cause is the combined detect-and-translate request rather than any particular phrasing. The real fix is to split it into two requests — not implemented yet.
 
 ## Current limitations
 
