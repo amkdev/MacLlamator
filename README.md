@@ -229,4 +229,4 @@ Worth knowing before you try it:
 
 ## License
 
-Not yet licensed, which under copyright law means all rights reserved. A license needs picking before this becomes useful to anyone else — MIT is the conventional choice for an app of this size.
+[MIT](LICENSE). Do what you like with it; just keep the copyright notice.
