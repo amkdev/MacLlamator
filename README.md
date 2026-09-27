@@ -18,12 +18,12 @@ Two panes side by side, translation as you type, and a menu bar icon to summon i
 ## Features
 
 - **Translate as you type.** Input is debounced by 500 ms and each new request cancels the previous one, so a fast typist triggers one translation instead of twenty.
+- **Menu bar icon for instant access.** A status item sits in the macOS menu bar: one click brings the window up over whatever you are working in, another puts it away. Closing the window hides it instead of tearing it down, so the next click returns exactly what you had — text included.
 - **Automatic source-language detection, on-device.** Apple's `NLLanguageRecognizer` identifies the language locally, and the result appears in the source picker (`German (detected)`). The model is never asked to detect and translate in one go, which is what used to go wrong. Input too ambiguous to call keeps the previous detection instead of being guessed at.
 - **A preferred language pair.** Pick two languages in Settings — when detection recognizes one of them, the other is selected as the target automatically. Typing German gives you English, typing English gives you German, with no menu fiddling.
 - **20 target languages**, from German and English through Japanese, Korean, Chinese and Arabic. Language names in the pickers come from macOS itself, so they appear in whatever language your system is set to.
 - **English and German interface.** The app follows your system language and falls back to English everywhere else.
 - **Swap direction** with one button, which also moves the current translation into the input pane so you can keep going.
-- **Lives in the menu bar.** Click the status item to show or hide the window. Closing the window hides it rather than tearing it down, so the next click brings back exactly what you had.
 - **Copy and clear** buttons per pane. The result pane is read-only but stays fully selectable — it is a plain `NSTextView` rather than a disabled `TextEditor`, precisely so that selecting and copying keeps working.
 - **Adjustable text size** with <kbd>⌘</kbd><kbd>+</kbd> / <kbd>⌘</kbd><kbd>−</kbd> (12–32 pt), remembered across launches.
 - **Custom prompt instructions.** A free-form text box whose contents are appended to every translation prompt — useful for steering tone, enforcing terminology, or working around a particular model's habits.
