@@ -214,9 +214,13 @@ Worth knowing before you try it:
 
 ## Credits
 
-- Code, project setup and documentation: [Claude Code](https://claude.com/claude-code)
-- App icon: generated with Google Gemini
-- Translation itself: whichever model you point it at, served by [Ollama](https://ollama.com)
+By **Alexander M. Korn** ([@amkdev](https://github.com/amkdev)) — the idea, the design and product decisions, the testing against real use, and the prompting behind every line of it.
+
+Made with:
+
+- [Claude Code](https://claude.com/claude-code) — wrote the Swift sources, the Xcode project configuration and this README
+- Google Gemini — generated the app icon
+- [Ollama](https://ollama.com) — runs the model that does the actual translating
 
 ## License
 
