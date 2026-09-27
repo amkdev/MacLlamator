@@ -1,9 +1,13 @@
 # MacLlamator
 
+> [!NOTE]
+> **This project was built 100% with [Claude Code](https://claude.com/claude-code).** The Swift sources, the Xcode project configuration and this README were all produced through Claude Code rather than written by hand.
+
 A native macOS translation app that runs entirely against your own [Ollama](https://ollama.com) server — no cloud service, no API key, no text leaving your machine.
 
 Two panes side by side, translation as you type, and a menu bar icon to summon it over whatever you are working in. Think DeepL's window, but the model is yours.
 
+![Built with Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-d97757)
 ![Platform: macOS 14+](https://img.shields.io/badge/platform-macOS%2014%2B-black)
 ![Swift 5](https://img.shields.io/badge/Swift-5-orange)
 ![Universal binary](https://img.shields.io/badge/arch-arm64%20%2B%20x86__64-blue)
