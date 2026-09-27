@@ -1,0 +1,72 @@
+//
+//  OllamaSettings.swift
+//  MacLlamator
+//
+
+import Foundation
+import Combine
+
+/// Stores the connection details for the Ollama server and the currently
+/// selected model. Values are persisted in UserDefaults.
+final class OllamaSettings: ObservableObject {
+    @Published var useLocal: Bool {
+        didSet { UserDefaults.standard.set(useLocal, forKey: Keys.useLocal) }
+    }
+
+    @Published var host: String {
+        didSet { UserDefaults.standard.set(host, forKey: Keys.host) }
+    }
+
+    @Published var port: Int {
+        didSet { UserDefaults.standard.set(port, forKey: Keys.port) }
+    }
+
+    @Published var model: String {
+        didSet { UserDefaults.standard.set(model, forKey: Keys.model) }
+    }
+
+    /// Free-form text appended to the translation prompt, e.g. to steer
+    /// tone, terminology, or work around a specific model's quirks.
+    @Published var customInstructions: String {
+        didSet { UserDefaults.standard.set(customInstructions, forKey: Keys.customInstructions) }
+    }
+
+    /// The two languages (as ISO codes) between which auto-detection should
+    /// automatically flip the target language: detecting one of them selects
+    /// the other as the target.
+    @Published var preferredLanguageA: String {
+        didSet { UserDefaults.standard.set(preferredLanguageA, forKey: Keys.preferredLanguageA) }
+    }
+
+    @Published var preferredLanguageB: String {
+        didSet { UserDefaults.standard.set(preferredLanguageB, forKey: Keys.preferredLanguageB) }
+    }
+
+    private enum Keys {
+        static let useLocal = "ollama.useLocal"
+        static let host = "ollama.host"
+        static let port = "ollama.port"
+        static let model = "ollama.model"
+        static let customInstructions = "ollama.customInstructions"
+        static let preferredLanguageA = "ollama.preferredLanguageA"
+        static let preferredLanguageB = "ollama.preferredLanguageB"
+    }
+
+    init() {
+        let defaults = UserDefaults.standard
+        self.useLocal = defaults.object(forKey: Keys.useLocal) as? Bool ?? true
+        self.host = defaults.string(forKey: Keys.host) ?? "127.0.0.1"
+        self.port = defaults.object(forKey: Keys.port) as? Int ?? 11434
+        self.model = defaults.string(forKey: Keys.model) ?? ""
+        self.customInstructions = defaults.string(forKey: Keys.customInstructions) ?? ""
+        self.preferredLanguageA = defaults.string(forKey: Keys.preferredLanguageA) ?? "de"
+        self.preferredLanguageB = defaults.string(forKey: Keys.preferredLanguageB) ?? "en"
+    }
+
+    /// Base URL of the Ollama server, respecting the "local" toggle.
+    var baseURL: URL? {
+        let effectiveHost = useLocal ? "127.0.0.1" : host
+        guard !effectiveHost.isEmpty else { return nil }
+        return URL(string: "http://\(effectiveHost):\(port)")
+    }
+}

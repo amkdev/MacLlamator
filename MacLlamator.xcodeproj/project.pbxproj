@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		8415E43C3064D3240044169D /* Ollama Translator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ollama Translator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8415E43C3064D3240044169D /* MacLlamator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MacLlamator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		8415E43E3064D3240044169D /* Ollama Translator */ = {
+		8415E43E3064D3240044169D /* MacLlamator */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Ollama Translator";
+			path = "MacLlamator";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -30,7 +30,7 @@
 		8415E4333064D3240044169D = {
 			isa = PBXGroup;
 			children = (
-				8415E43E3064D3240044169D /* Ollama Translator */,
+				8415E43E3064D3240044169D /* MacLlamator */,
 				8415E43D3064D3240044169D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -38,7 +38,7 @@
 		8415E43D3064D3240044169D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8415E43C3064D3240044169D /* Ollama Translator.app */,
+				8415E43C3064D3240044169D /* MacLlamator.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -46,9 +46,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8415E43B3064D3240044169D /* Ollama Translator */ = {
+		8415E43B3064D3240044169D /* MacLlamator */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8415E4473064D3250044169D /* Build configuration list for PBXNativeTarget "Ollama Translator" */;
+			buildConfigurationList = 8415E4473064D3250044169D /* Build configuration list for PBXNativeTarget "MacLlamator" */;
 			buildPhases = (
 				8415E4383064D3240044169D /* Sources */,
 				8415E4393064D3240044169D /* Frameworks */,
@@ -57,11 +57,11 @@
 			buildRules = (
 			);
 			fileSystemSynchronizedGroups = (
-				8415E43E3064D3240044169D /* Ollama Translator */,
+				8415E43E3064D3240044169D /* MacLlamator */,
 			);
-			name = "Ollama Translator";
-			productName = "Ollama Translator";
-			productReference = 8415E43C3064D3240044169D /* Ollama Translator.app */;
+			name = "MacLlamator";
+			productName = "MacLlamator";
+			productReference = 8415E43C3064D3240044169D /* MacLlamator.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -79,7 +79,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8415E4373064D3240044169D /* Build configuration list for PBXProject "Ollama Translator" */;
+			buildConfigurationList = 8415E4373064D3240044169D /* Build configuration list for PBXProject "MacLlamator" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -93,7 +93,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8415E43B3064D3240044169D /* Ollama Translator */,
+				8415E43B3064D3240044169D /* MacLlamator */,
 			);
 		};
 /* End PBXProject section */
@@ -115,7 +115,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		8415E4453064D3250044169D /* Debug configuration for PBXProject "Ollama Translator" */ = {
+		8415E4453064D3250044169D /* Debug configuration for PBXProject "MacLlamator" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -178,7 +178,7 @@
 			};
 			name = Debug;
 		};
-		8415E4463064D3250044169D /* Release configuration for PBXProject "Ollama Translator" */ = {
+		8415E4463064D3250044169D /* Release configuration for PBXProject "MacLlamator" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -233,7 +233,7 @@
 			};
 			name = Release;
 		};
-		8415E4483064D3250044169D /* Debug configuration for PBXNativeTarget "Ollama Translator" */ = {
+		8415E4483064D3250044169D /* Debug configuration for PBXNativeTarget "MacLlamator" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -242,6 +242,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -250,8 +251,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "amk.Ollama-Translator";
+				PRODUCT_BUNDLE_IDENTIFIER = "amk.MacLlamator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -263,7 +265,7 @@
 			};
 			name = Debug;
 		};
-		8415E4493064D3250044169D /* Release configuration for PBXNativeTarget "Ollama Translator" */ = {
+		8415E4493064D3250044169D /* Release configuration for PBXNativeTarget "MacLlamator" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -272,6 +274,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -280,8 +283,9 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "amk.Ollama-Translator";
+				PRODUCT_BUNDLE_IDENTIFIER = "amk.MacLlamator";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -296,19 +300,19 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8415E4373064D3240044169D /* Build configuration list for PBXProject "Ollama Translator" */ = {
+		8415E4373064D3240044169D /* Build configuration list for PBXProject "MacLlamator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8415E4453064D3250044169D /* Debug configuration for PBXProject "Ollama Translator" */,
-				8415E4463064D3250044169D /* Release configuration for PBXProject "Ollama Translator" */,
+				8415E4453064D3250044169D /* Debug configuration for PBXProject "MacLlamator" */,
+				8415E4463064D3250044169D /* Release configuration for PBXProject "MacLlamator" */,
 			);
 			defaultConfigurationName = Release;
 		};
-		8415E4473064D3250044169D /* Build configuration list for PBXNativeTarget "Ollama Translator" */ = {
+		8415E4473064D3250044169D /* Build configuration list for PBXNativeTarget "MacLlamator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8415E4483064D3250044169D /* Debug configuration for PBXNativeTarget "Ollama Translator" */,
-				8415E4493064D3250044169D /* Release configuration for PBXNativeTarget "Ollama Translator" */,
+				8415E4483064D3250044169D /* Debug configuration for PBXNativeTarget "MacLlamator" */,
+				8415E4493064D3250044169D /* Release configuration for PBXNativeTarget "MacLlamator" */,
 			);
 			defaultConfigurationName = Release;
 		};

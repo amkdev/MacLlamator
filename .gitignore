@@ -1,0 +1,25 @@
+# macOS
+.DS_Store
+
+# Xcode – Build-Artefakte
+build/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Xcode – benutzerspezifischer Zustand (gehört nicht ins Repo)
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# IDEs / Tooling
+.idea/
+.claude/
