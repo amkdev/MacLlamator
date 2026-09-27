@@ -180,9 +180,6 @@ Compared on a German administrative text, a colloquial idiom, an English→Germa
 | `llama3.1:8b` | 4.9 GB | **Weakest.** Completed a sentence fragment in 2 of 3 runs, which matters because the app translates as you type and every intermediate state is a fragment. Also produced broken German grammar and rendered *Antrag* as *demandeur* in French |
 | `qwen3:4b` (community build) | 2.5 GB | Good German→English, the only model to avoid the *Instanz* → *instance* false friend; clumsier in the other direction |
 | `qwen2.5:14b` | 9.0 GB | The only one to get the idiom's *meaning* right, though with awkward word order. Too large for a 5 GB budget |
-| `mistral-nemo:12b` | 7.1 GB | Not quality-tested |
-| `gemma2:27b` (q3_K_M) | 13.4 GB | Not quality-tested |
-| `deepseek-r1:8b` | 5.2 GB | A reasoning model, not intended for translation |
 
 **None of the small models handles German idioms.** Given *Das ist mir Wurst*, `aya` produced fluent English with the wrong meaning ("not my cup of tea"), while the others went literal ("That's really sausage to me"). Expect idioms to need a human pass whichever model you pick.
 
