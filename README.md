@@ -13,9 +13,7 @@ Two panes side by side, translation as you type, and a menu bar icon to summon i
 ![Platform: macOS 14+](https://img.shields.io/badge/platform-macOS%2014%2B-black)
 ![Universal binary](https://img.shields.io/badge/arch-arm64%20%2B%20x86__64-blue)
 
-<!-- Screenshot goes here once captured:
-![MacLlamator translating German to English](docs/screenshot.png)
--->
+![MacLlamator translating German into English, with the source language detected automatically](docs/screenshot.png)
 
 ## Features
 
