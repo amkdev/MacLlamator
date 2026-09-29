@@ -373,12 +373,13 @@
         }
       }
     },
-    "Swap languages": {
+    "Swap languages (Cmd+Shift+S)": {
+      "comment": "Tooltip of the swap button in the language bar",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sprachen tauschen"
+            "value": "Sprachen tauschen (Cmd+Shift+S)"
           }
         }
       }

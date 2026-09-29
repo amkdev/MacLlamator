@@ -154,7 +154,11 @@ struct ContentView: View {
             }
             .buttonStyle(.plain)
             .disabled(effectiveSourceLanguage == nil)
-            .help("Swap languages")
+            // The shortcut hangs on the button so it inherits the same
+            // disabled rule. It has no menu entry to be discovered from,
+            // which is what the tooltip is for.
+            .keyboardShortcut("s", modifiers: [.command, .shift])
+            .help("Swap languages (Cmd+Shift+S)")
             .padding(.horizontal, 16)
 
             languageMenu(
