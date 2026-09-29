@@ -7,6 +7,7 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var settings: AppSettings
+    @EnvironmentObject private var catalog: ModelCatalog
     @Environment(\.openSettings) private var openSettings
 
     private let service = OllamaService()
@@ -58,6 +59,9 @@ struct ContentView: View {
         .frame(minWidth: 760, minHeight: 480)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
+                modelMenu
+            }
+            ToolbarItem(placement: .primaryAction) {
                 Button {
                     openSettings()
                 } label: {
@@ -66,6 +70,7 @@ struct ContentView: View {
                 .help("Settings")
             }
         }
+        .task { await catalog.refresh(settings: settings) }
         .onChange(of: sourceText) { _, newValue in
             scheduleTranslation(for: newValue)
         }
@@ -79,6 +84,43 @@ struct ContentView: View {
         .onChange(of: targetLanguage) { _, _ in
             scheduleTranslation(for: sourceText)
         }
+    }
+
+    /// Shows the active model and lets it be switched without the detour
+    /// through Settings. The label carries the current value the way
+    /// MacLlamaStar's toolbar menus do, so the toolbar answers "which model
+    /// is this running on?" without having to be opened.
+    private var modelMenu: some View {
+        Menu {
+            if catalog.models.isEmpty {
+                Text("No models found")
+            } else {
+                Picker("Model", selection: $settings.model) {
+                    ForEach(catalog.models) { model in
+                        Text(model.name).tag(model.name)
+                    }
+                }
+                .pickerStyle(.inline)
+                .labelsHidden()
+            }
+
+            Divider()
+
+            Button {
+                Task { await catalog.refresh(settings: settings) }
+            } label: {
+                Label("Refresh models", systemImage: "arrow.clockwise")
+            }
+            .disabled(catalog.isLoading)
+        } label: {
+            Label(modelMenuTitle, systemImage: "cpu")
+                .labelStyle(.titleAndIcon)
+        }
+        .help("Active model")
+    }
+
+    private var modelMenuTitle: String {
+        settings.model.isEmpty ? String(localized: "No model") : settings.model
     }
 
     private var languageBar: some View {
@@ -255,4 +297,5 @@ struct ContentView: View {
     ContentView()
         .environmentObject(AppSettings())
         .environmentObject(EditorFontSettings())
+        .environmentObject(ModelCatalog())
 }

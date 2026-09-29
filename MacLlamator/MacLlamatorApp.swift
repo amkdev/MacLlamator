@@ -13,12 +13,14 @@ struct MacLlamatorApp: App {
 
     @StateObject private var settings = AppSettings()
     @StateObject private var fontSettings = EditorFontSettings()
+    @StateObject private var modelCatalog = ModelCatalog()
 
     var body: some Scene {
         WindowGroup(id: "main") {
             ContentView()
                 .environmentObject(settings)
                 .environmentObject(fontSettings)
+                .environmentObject(modelCatalog)
         }
         .commands {
             CommandMenu("Font") {
@@ -32,6 +34,7 @@ struct MacLlamatorApp: App {
         Settings {
             SettingsView()
                 .environmentObject(settings)
+                .environmentObject(modelCatalog)
         }
         .windowResizability(.contentSize)
     }

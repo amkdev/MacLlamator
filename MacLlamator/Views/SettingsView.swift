@@ -7,11 +7,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var settings: AppSettings
-    private let service = OllamaService()
-
-    @State private var availableModels: [OllamaModel] = []
-    @State private var isLoadingModels = false
-    @State private var connectionError: String?
+    @EnvironmentObject private var catalog: ModelCatalog
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -65,7 +61,7 @@ struct SettingsView: View {
                     if settings.model.isEmpty {
                         Text("No model selected").tag("")
                     }
-                    ForEach(availableModels) { model in
+                    ForEach(catalog.models) { model in
                         Text(model.name).tag(model.name)
                     }
                 }
@@ -75,17 +71,17 @@ struct SettingsView: View {
 
                 HStack {
                     Button {
-                        Task { await loadModels() }
+                        Task { await catalog.refresh(settings: settings) }
                     } label: {
-                        if isLoadingModels {
+                        if catalog.isLoading {
                             ProgressView().controlSize(.small)
                         } else {
                             Label("Refresh models", systemImage: "arrow.clockwise")
                         }
                     }
-                    .disabled(isLoadingModels)
+                    .disabled(catalog.isLoading)
 
-                    if let connectionError {
+                    if let connectionError = catalog.errorMessage {
                         Text(connectionError)
                             .font(.caption)
                             .foregroundStyle(.red)
@@ -151,7 +147,7 @@ struct SettingsView: View {
         .padding(20)
         .frame(width: 420)
         .fixedSize(horizontal: false, vertical: true)
-        .task { await loadModels() }
+        .task { await catalog.refresh(settings: settings) }
     }
 
     private static func keepAliveLabel(_ seconds: Int) -> String {
@@ -182,23 +178,10 @@ struct SettingsView: View {
         }
     }
 
-    private func loadModels() async {
-        isLoadingModels = true
-        connectionError = nil
-        defer { isLoadingModels = false }
-
-        do {
-            availableModels = try await service.fetchModels(settings: settings)
-            if settings.model.isEmpty, let first = availableModels.first {
-                settings.model = first.name
-            }
-        } catch {
-            connectionError = error.localizedDescription
-        }
-    }
 }
 
 #Preview {
     SettingsView()
         .environmentObject(AppSettings())
+        .environmentObject(ModelCatalog())
 }

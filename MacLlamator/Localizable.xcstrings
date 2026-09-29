@@ -41,6 +41,17 @@
         }
       }
     },
+    "Active model": {
+      "comment": "Tooltip of the toolbar's model menu",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktives Modell"
+          }
+        }
+      }
+    },
     "Additional instructions for the model (optional), e.g. about tone or terminology.": {
       "localizations": {
         "de": {
@@ -183,6 +194,17 @@
         }
       }
     },
+    "No model": {
+      "comment": "Toolbar label while no model is selected",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Modell"
+          }
+        }
+      }
+    },
     "No model selected": {
       "comment": "Placeholder in the model picker when nothing is chosen yet",
       "localizations": {
@@ -201,6 +223,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kein Modell ausgewählt."
+          }
+        }
+      }
+    },
+    "No models found": {
+      "comment": "Shown in the toolbar's model menu when the server offers none",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Modelle gefunden"
           }
         }
       }
