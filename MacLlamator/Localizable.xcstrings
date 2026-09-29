@@ -62,6 +62,17 @@
         }
       }
     },
+    "After %@": {
+      "comment": "Delay option; %@ is a formatted duration such as 500 ms or 2 s",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach %@"
+          }
+        }
+      }
+    },
     "All": {
       "comment": "Button: enable every language",
       "localizations": {
@@ -73,13 +84,13 @@
         }
       }
     },
-    "Automatic translation": {
+    "Automatic translation while typing": {
       "comment": "Settings section title",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Automatische Übersetzung"
+            "value": "Automatisches Übersetzen bei Eingabe"
           }
         }
       }
@@ -156,13 +167,13 @@
         }
       }
     },
-    "How long the text has to stay unchanged before a translation is sent. With automatic translation switched off, nothing is sent until Cmd+Return asks for it.": {
-      "comment": "Explains the wait setting and the manual alternative",
+    "How long the text has to stay unchanged before it is translated automatically. Switched off, nothing is sent until Cmd+Return asks for it.": {
+      "comment": "Explains the automatic translation setting",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wie lange der Text unverändert bleiben muss, bevor eine Übersetzung gesendet wird. Bei abgeschalteter automatischer Übersetzung wird nichts gesendet, bis Cmd+Return es verlangt."
+            "value": "Wie lange der Text unverändert bleiben muss, bevor automatisch übersetzt wird. Ausgeschaltet wird nichts gesendet, bis Cmd+Return es verlangt."
           }
         }
       }
@@ -300,6 +311,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nicht unter den Sprachen, die dieses Modell nennt"
+          }
+        }
+      }
+    },
+    "Off — only on Cmd+Return": {
+      "comment": "Delay option that switches automatic translation off",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus — nur mit Cmd+Return"
           }
         }
       }
@@ -503,17 +525,6 @@
         }
       }
     },
-    "Translate while typing": {
-      "comment": "Settings toggle",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Beim Tippen übersetzen"
-          }
-        }
-      }
-    },
     "Translation": {
       "comment": "Two uses, same word: the placeholder of the read-only result pane, and the title of the Settings tab holding the translation options.",
       "localizations": {
@@ -531,17 +542,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bis Ollama beendet wird"
-          }
-        }
-      }
-    },
-    "Wait before translating": {
-      "comment": "Settings: debounce before an automatic translation is sent",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wartezeit vor dem Übersetzen"
           }
         }
       }

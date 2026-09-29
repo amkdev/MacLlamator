@@ -5,9 +5,9 @@
 
 import SwiftUI
 
-/// Which languages the app offers at all, and which two it prefers. Kept on
-/// a page of its own because the list of ticks is tall enough to bury
-/// anything sharing a column with it.
+/// Which languages the app offers at all. A page to itself because the list
+/// of ticks is tall enough to bury anything sharing a column with it; which
+/// two of them are preferred belongs with the translation settings.
 struct LanguageSettingsPane: View {
     @EnvironmentObject private var settings: AppSettings
     @EnvironmentObject private var catalog: ModelCatalog
@@ -49,37 +49,6 @@ struct LanguageSettingsPane: View {
                 }
             }
 
-            SettingsSection("Preferred languages") {
-                Text("When automatic detection recognizes one of these two languages, the other is selected as the target language.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                HStack {
-                    Text("Language 1")
-                    Spacer()
-                    Picker("Language 1", selection: $settings.preferredLanguageA) {
-                        ForEach(settings.enabledLanguages) { language in
-                            Text(language.displayName).tag(language.code)
-                        }
-                    }
-                    .labelsHidden()
-                    .frame(width: 160)
-                }
-
-                Divider()
-
-                HStack {
-                    Text("Language 2")
-                    Spacer()
-                    Picker("Language 2", selection: $settings.preferredLanguageB) {
-                        ForEach(settings.enabledLanguages) { language in
-                            Text(language.displayName).tag(language.code)
-                        }
-                    }
-                    .labelsHidden()
-                    .frame(width: 160)
-                }
-            }
         }
         .settingsPaneLayout()
         .task(id: settings.model) {

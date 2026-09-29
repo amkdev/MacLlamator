@@ -129,7 +129,7 @@ The app lands in `build/MacLlamator.xcarchive/Products/Applications/`. Use the `
 
 ## Configuration
 
-Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>. It has three tabs: **Ollama** for where translation runs, **Languages** for which ones it offers, **Translation** for how it behaves.
+Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>. It has three tabs: **Ollama** for where translation runs, **Languages** for which ones are on offer, **Translation** for how it behaves.
 
 | Setting | Default | Notes |
 |---|---|---|
@@ -141,8 +141,7 @@ Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>.
 | Preferred languages | German / English | The pair that auto-detection flips between, chosen from the ticked ones |
 | Prompt instructions | empty | Appended to every translation prompt |
 | Keep model in memory | 30 minutes | How long Ollama holds the model after a request; *Until Ollama quits* never unloads it |
-| Translate while typing | on | Off means nothing is sent until <kbd>⌘</kbd><kbd>↩</kbd> or the Translate button |
-| Wait before translating | 500 ms | How long the text must stay unchanged before an automatic translation is sent |
+| Automatic translation while typing | after 500 ms | How long the text must stay unchanged before it is translated; *Off* means nothing is sent until <kbd>⌘</kbd><kbd>↩</kbd> or the Translate button |
 
 Everything is stored in `UserDefaults` under the `ollama.*`, `translation.*` and `editor.*` keys. Use **Refresh models** in Settings to re-read the model list after pulling something new.
 
@@ -210,8 +209,8 @@ MacLlamator/
 └── Views/
     ├── SettingsView.swift            Tab shell
     ├── OllamaSettingsPane.swift      Server and model
-    ├── LanguageSettingsPane.swift    Available languages, preferred pair
-    ├── TranslationSettingsPane.swift Automatic translation, prompt
+    ├── LanguageSettingsPane.swift    Which languages are on offer
+    ├── TranslationSettingsPane.swift Preferred pair, automatic translation, prompt
     ├── SettingsSection.swift         Shared group styling
     └── TranslationPaneView.swift
 ```
