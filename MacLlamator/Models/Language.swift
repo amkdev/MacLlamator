@@ -32,9 +32,14 @@ struct Language: Identifiable, Hashable, Codable {
             ?? code.uppercased()
     }
 
+    /// Grouped roughly by region rather than sorted, because the menu shows
+    /// them in this order and the names are localized — an alphabetical list
+    /// would reshuffle itself with the system language.
     static let all: [Language] = [
         "de", "en", "fr", "es", "it", "pt", "nl", "pl", "ru", "tr",
-        "sv", "da", "no", "fi", "cs", "uk", "ja", "ko", "zh", "ar",
+        "sv", "da", "no", "fi", "cs", "uk", "ro", "el",
+        "ja", "ko", "zh", "vi", "id", "hi",
+        "ar", "he", "fa",
     ].map(Language.init(code:))
 
     /// Source column may additionally offer automatic detection.
