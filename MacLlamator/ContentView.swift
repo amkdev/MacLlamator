@@ -36,15 +36,6 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            if let languageWarning {
-                Text(languageWarning)
-                    .font(.callout)
-                    .foregroundStyle(.orange)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 8)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-
             Divider()
 
             HStack(spacing: 0) {
@@ -103,6 +94,9 @@ struct ContentView: View {
         .onChange(of: targetLanguage) { _, _ in
             scheduleTranslation(for: sourceText)
         }
+        .onChange(of: settings.enabledLanguageCodes) { _, _ in
+            reconcileLanguageSelection()
+        }
         .onChange(of: settings.autoTranslate) { _, isOn in
             // Switching the automatic run back on should catch up with the
             // text that is already there, not wait for the next keystroke.
@@ -152,7 +146,7 @@ struct ContentView: View {
             languageMenu(
                 selection: sourceLanguage,
                 displayName: sourceDisplayName,
-                options: Language.sourceOptions
+                options: [.auto] + settings.enabledLanguages
             ) { sourceLanguage = $0 }
             .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -173,30 +167,12 @@ struct ContentView: View {
             languageMenu(
                 selection: targetLanguage,
                 displayName: targetLanguage.displayName,
-                options: Language.all
+                options: settings.enabledLanguages
             ) { targetLanguage = $0 }
             .frame(maxWidth: .infinity, alignment: .trailing)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-    }
-
-    /// Names the chosen languages the active model does not officially
-    /// cover. Stays `nil` for a model the table does not know, so an
-    /// unfamiliar model is never second-guessed.
-    private var languageWarning: String? {
-        var flagged: [String] = []
-        for language in [effectiveSourceLanguage, targetLanguage].compactMap({ $0 })
-        where ModelLanguageSupport.isUnsupported(language, by: settings.model) {
-            let name = language.displayName
-            if !flagged.contains(name) { flagged.append(name) }
-        }
-        guard !flagged.isEmpty else { return nil }
-
-        let names = ListFormatter.localizedString(byJoining: flagged)
-        return String(
-            localized: "\(settings.model) does not officially support \(names). Translating anyway may work, but nothing vouches for the result."
-        )
     }
 
     /// The concrete language currently backing "automatisch erkennen" (once
@@ -222,14 +198,8 @@ struct ContentView: View {
                 Button {
                     onSelect(language)
                 } label: {
-                    // A menu item can carry one symbol, so the checkmark wins
-                    // where both would apply: which entry is selected matters
-                    // more inside an open menu, and the warning line under the
-                    // language bar says the rest once the menu is closed.
                     if language == selection {
                         Label(language.displayName, systemImage: "checkmark")
-                    } else if ModelLanguageSupport.isUnsupported(language, by: settings.model) {
-                        Label(language.displayName, systemImage: "exclamationmark.triangle")
                     } else {
                         Text(language.displayName)
                     }
@@ -245,6 +215,25 @@ struct ContentView: View {
         }
         .menuStyle(.borderlessButton)
         .fixedSize()
+    }
+
+    /// Keeps the pickers pointing at languages that are still on the list
+    /// after it was edited in Settings.
+    ///
+    /// Detection is deliberately left alone: it runs against the whole
+    /// catalogue and reports what the text actually is. Narrowing it to the
+    /// shortlist is the mistake LanguageDetector warns about — excluding the
+    /// right answer makes the recognizer pick a wrong one with confidence.
+    private func reconcileLanguageSelection() {
+        let enabled = settings.enabledLanguages
+        guard let first = enabled.first else { return }
+
+        if !sourceLanguage.isAuto, !enabled.contains(sourceLanguage) {
+            sourceLanguage = .auto
+        }
+        if !enabled.contains(targetLanguage) {
+            targetLanguage = enabled.first { $0 != sourceLanguage } ?? first
+        }
     }
 
     private func swapLanguages() {

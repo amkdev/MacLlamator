@@ -42,6 +42,11 @@ struct Language: Identifiable, Hashable, Codable {
         "ar", "he", "fa",
     ].map(Language.init(code:))
 
-    /// Source column may additionally offer automatic detection.
-    static let sourceOptions: [Language] = [.auto] + all
+    /// The catalogue's codes as a set, for narrowing a model's declaration
+    /// down to languages this app actually offers.
+    static let allCodes: Set<String> = Set(all.map(\.code))
+
+    // The source column additionally offers automatic detection, but which
+    // languages are listed at all is now the user's choice — see
+    // AppSettings.enabledLanguages.
 }

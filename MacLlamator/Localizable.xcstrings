@@ -11,17 +11,6 @@
         }
       }
     },
-    "%@ does not officially support %@. Translating anyway may work, but nothing vouches for the result.": {
-      "comment": "Warning under the language bar; the model name first, then a list of language names",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ unterstützt %@ offiziell nicht. Eine Übersetzung kann trotzdem gelingen, verbürgt ist sie nicht."
-          }
-        }
-      }
-    },
     "1 hour": {
       "localizations": {
         "de": {
@@ -69,6 +58,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zusätzliche Anweisungen an das Modell (optional), z. B. zu Tonalität oder Terminologie."
+          }
+        }
+      }
+    },
+    "All": {
+      "comment": "Button: enable every language",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle"
           }
         }
       }
@@ -196,6 +196,17 @@
         }
       }
     },
+    "Languages": {
+      "comment": "Settings section: which languages appear in the pickers",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprachen"
+          }
+        }
+      }
+    },
     "Larger": {
       "comment": "Increases the text size in both panes",
       "localizations": {
@@ -271,6 +282,17 @@
         }
       }
     },
+    "Not among the languages this model lists": {
+      "comment": "Tooltip of the hint marker in the language list",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht unter den Sprachen, die dieses Modell nennt"
+          }
+        }
+      }
+    },
     "Ollama": {
       "comment": "Settings tab: server and model",
       "localizations": {
@@ -302,6 +324,28 @@
         }
       }
     },
+    "Only the ticked languages appear in the pickers. Which ones are worth offering depends on the model and on what you actually translate — both of which you know better than the app does.": {
+      "comment": "Explains the language shortlist",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In den Auswahlmenüs erscheinen nur die angehakten Sprachen. Welche sich lohnen, hängt vom Modell und davon ab, was tatsächlich übersetzt wird — beides wissen Sie besser als die App."
+          }
+        }
+      }
+    },
+    "Only what %@ lists": {
+      "comment": "Button: reduce the list to what the named model declares; %@ is the model name",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur was %@ nennt"
+          }
+        }
+      }
+    },
     "Port": {
       "localizations": {
         "de": {
@@ -318,6 +362,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bevorzugte Sprachen"
+          }
+        }
+      }
+    },
+    "Preferred pair only": {
+      "comment": "Button: reduce the list to the two preferred languages",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur das Vorzugspaar"
           }
         }
       }

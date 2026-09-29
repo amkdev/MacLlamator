@@ -22,8 +22,8 @@ Two panes side by side, translation as you type, and a menu bar icon to summon i
 - **Menu bar icon for instant access.** A status item sits in the macOS menu bar: one click brings the window up over whatever you are working in, another puts it away. Closing the window hides it instead of tearing it down, so the next click returns exactly what you had — text included.
 - **Automatic source-language detection, on-device.** Apple's `NLLanguageRecognizer` identifies the language locally rather than making the model detect and translate in one request, and the result appears in the source picker (`German (detected)`). Input too ambiguous to call keeps the previous detection instead of being guessed at, and a translation that comes back in the source language is flagged rather than passed off as one.
 - **A preferred language pair.** Pick two languages in Settings — when detection recognizes one of them, the other is selected as the target automatically. Typing German gives you English, typing English gives you German, with no menu fiddling.
-- **27 target languages**, from German and English through Greek, Hindi, Vietnamese and Arabic. Language names in the pickers come from macOS itself, so they appear in whatever language your system is set to.
-- **A warning when the model does not cover a language.** Aya officially handles 23 of the 27, so picking Swedish gets you a note under the language bar rather than a silent maybe. It warns instead of restricting: not being on a published list is not the same as not working.
+- **A language list you choose yourself.** 27 are on offer, from German and English through Greek, Hindi, Vietnamese and Arabic — tick the ones you want and the rest stay out of the pickers. Which languages are worth offering depends on your model and on what you actually translate, and you know both better than the app does. Names come from macOS itself, so they appear in whatever language your system is set to.
+- **A shortcut for the model's own list.** Where a model declares its languages, Settings offers to narrow the list to exactly those with one click: `llama3.1:8b` carries Meta's eight, so *Only what llama3.1:8b lists* leaves seven of the 27. Models that declare nothing fall back to a short table — `aya` is there — and models neither knows about are left alone rather than guessed at.
 - **English and German interface.** The app follows your system language and falls back to English everywhere else.
 - **Swap direction** with one button or <kbd>⌘</kbd><kbd>⇧</kbd><kbd>S</kbd>, which also moves the current translation into the input pane so you can keep going.
 - **Copy and clear** buttons per pane. The result pane is read-only but stays fully selectable — it is a plain `NSTextView` rather than a disabled `TextEditor`, precisely so that selecting and copying keeps working.
@@ -137,7 +137,8 @@ Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>.
 | Host | `127.0.0.1` | Hostname or IP, used when "local server" is off |
 | Port | `11434` | Ollama's default |
 | Model | first one found | Populated from the server's installed models |
-| Preferred languages | German / English | The pair that auto-detection flips between |
+| Languages | all 27 | Which languages appear in the pickers; the last two ticks stay put |
+| Preferred languages | German / English | The pair that auto-detection flips between, chosen from the ticked ones |
 | Prompt instructions | empty | Appended to every translation prompt |
 | Keep model in memory | 30 minutes | How long Ollama holds the model after a request; *Until Ollama quits* never unloads it |
 | Translate while typing | on | Off means nothing is sent until <kbd>⌘</kbd><kbd>↩</kbd> or the Translate button |
@@ -221,7 +222,7 @@ Worth knowing before you try it:
 - **No streaming.** The translation appears when the model is done rather than word by word, so long inputs sit on a spinner for a while.
 - **No history.** Closing the window keeps the current text, quitting the app discards it.
 - **No tests yet.**
-- **The per-model language list is maintained by hand.** Nothing reports it: the GGUF metadata names the architecture and nothing else, and Ollama's `/api/show` passes through no language key at all. So the warning only knows the models listed in `ModelLanguageSupport` — anything else is never flagged, which is the honest answer but not a helpful one.
+- **Not every model says which languages it handles.** `/api/show` exposes `general.languages` where the GGUF carries it — `llama3.1:8b` does, `aya:latest` does not — so the one-click shortcut works for some models and falls back to a short hand-kept table for others. Models in neither get no suggestion at all. Asking the model itself is not a way round this: measured against both, `aya` named ten of its twenty-three languages and `llama3.1` claimed forty-seven instead of eight.
 - Translation quality is entirely the model's. A small model will produce small-model translations.
 
 ## Credits

@@ -7,8 +7,8 @@ import Foundation
 import Combine
 
 /// Everything the app remembers between launches: the Ollama connection and
-/// the chosen model, the two preferred languages, how eagerly it translates,
-/// and the extra prompt instructions.
+/// the chosen model, which languages to offer and which two to prefer, how
+/// eagerly it translates, and the extra prompt instructions.
 ///
 /// Persisted in UserDefaults. The keys keep their historical `ollama.` prefix
 /// even though the type is no longer Ollama-specific, so that existing
@@ -59,6 +59,20 @@ final class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(autoTranslateDelayMs, forKey: Keys.autoTranslateDelayMs) }
     }
 
+    /// Which languages appear in the pickers, as ISO codes.
+    ///
+    /// The user's own shortlist, not a judgement about the model: which
+    /// languages are worth offering is something they know and the app does
+    /// not. It also keeps the menus short, which a full catalogue of
+    /// twenty-seven never is.
+    @Published var enabledLanguageCodes: Set<String> {
+        didSet {
+            UserDefaults.standard.set(
+                enabledLanguageCodes.sorted(), forKey: Keys.enabledLanguages
+            )
+        }
+    }
+
     /// The two languages (as ISO codes) between which auto-detection should
     /// automatically flip the target language: detecting one of them selects
     /// the other as the target.
@@ -83,6 +97,7 @@ final class AppSettings: ObservableObject {
         // prefix that says what they actually configure.
         static let autoTranslate = "translation.autoTranslate"
         static let autoTranslateDelayMs = "translation.autoTranslateDelayMs"
+        static let enabledLanguages = "translation.enabledLanguages"
     }
 
     init() {
@@ -97,6 +112,15 @@ final class AppSettings: ObservableObject {
         self.keepAliveSeconds = defaults.object(forKey: Keys.keepAliveSeconds) as? Int ?? 1800
         self.autoTranslate = defaults.object(forKey: Keys.autoTranslate) as? Bool ?? true
         self.autoTranslateDelayMs = defaults.object(forKey: Keys.autoTranslateDelayMs) as? Int ?? 500
+
+        // No stored list means an installation from before the list existed,
+        // or a fresh one: offer everything rather than silently hiding
+        // languages someone was using. A stored list too short to swap
+        // between is treated as absent, since it cannot have come from the UI.
+        let storedLanguages = Set(defaults.array(forKey: Keys.enabledLanguages) as? [String] ?? [])
+        self.enabledLanguageCodes = storedLanguages.count >= Self.minimumEnabledLanguages
+            ? storedLanguages
+            : Set(Language.all.map(\.code))
     }
 
     /// Offered in Settings. Seconds, with `-1` meaning "until Ollama exits".
@@ -104,6 +128,16 @@ final class AppSettings: ObservableObject {
 
     /// Offered in Settings, in milliseconds.
     static let autoTranslateDelayOptions: [Int] = [300, 500, 1000, 2000]
+
+    /// Swapping source and target is meaningless with fewer, so the last two
+    /// ticks cannot be removed.
+    static let minimumEnabledLanguages = 2
+
+    /// The languages to offer, in the catalogue's own order. Codes that are
+    /// stored but no longer in the catalogue simply drop out here.
+    var enabledLanguages: [Language] {
+        Language.all.filter { enabledLanguageCodes.contains($0.code) }
+    }
 
     /// Base URL of the Ollama server, respecting the "local" toggle.
     var baseURL: URL? {

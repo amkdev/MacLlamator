@@ -5,22 +5,25 @@
 
 import Foundation
 
-/// Which languages a model's makers say it handles.
+/// Language lists for models whose own files do not carry one.
 ///
-/// This table is written by hand because there is nothing to read it from.
-/// The GGUF behind `aya:latest` carries three `general.` keys —
-/// architecture, name, file type — and no language list; Ollama's
-/// `/api/show` passes through even less, with no key mentioning a language
-/// at all. The one machine-readable list lives in the Hugging Face model
-/// card's front matter, which is behind an access gate for Aya and missing
-/// entirely for models published only to Ollama. Anyone looking for the
-/// automatic solution later can stop looking: there isn't one.
+/// The first place to look is the model itself: `/api/show` exposes
+/// `general.languages` where the GGUF carries it, and that is the
+/// publisher's own declaration — see `OllamaService.declaredLanguageCodes`.
+/// This table is only the patch list for models that stay silent, and that
+/// split runs right through the two models this app was built against:
+/// `llama3.1:8b` declares Meta's eight languages, `aya:latest` has no
+/// language key at all.
 ///
-/// The table is deliberately advisory. A language missing from it is
-/// flagged, never hidden: "not on the official list" is not "cannot do it",
-/// and Aya very likely produces passable Swedish — Cohere simply does not
-/// stand behind it. A model the table does not know returns `nil`, and then
-/// nothing is flagged at all, which is the right answer for a guess.
+/// Both sources only ever advise. They feed the suggestion in Settings that
+/// narrows the language list to what a model is built for; nothing is hidden
+/// or blocked on their say-so, because "not on the published list" is not
+/// "cannot do it" — Aya very likely manages Swedish, Cohere simply does not
+/// stand behind it. What appears in the pickers is the user's own choice.
+///
+/// Add a model here only once its published list has really been read. An
+/// invented row is worse than no row: it recommends against languages that
+/// work and stays quiet about ones that do not.
 enum ModelLanguageSupport {
 
     /// The ISO codes a model officially covers, or `nil` if this table has
@@ -30,25 +33,13 @@ enum ModelLanguageSupport {
         return table.first { name.hasPrefix($0.prefix) }?.codes
     }
 
-    /// True only when the model is known *and* leaves this language out.
-    /// Automatic detection is never flagged — there is no language to judge
-    /// until it has settled on one.
-    static func isUnsupported(_ language: Language, by model: String) -> Bool {
-        guard !language.isAuto else { return false }
-        guard let codes = supportedCodes(forModel: model) else { return false }
-        return !codes.contains(language.code)
-    }
-
     private struct Entry {
         let prefix: String
         let codes: Set<String>
     }
 
     /// Matched against the start of the model name, so `aya:latest` and
-    /// `aya-expanse:8b` both find the Aya row. Add a model here only once
-    /// its published list has actually been read — an invented row is worse
-    /// than no row, because it warns about languages that work and stays
-    /// silent about ones that do not.
+    /// `aya-expanse:8b` both find the Aya row.
     private static let table: [Entry] = [
         // Aya 23, per Cohere's model card: 23 languages.
         Entry(prefix: "aya", codes: [

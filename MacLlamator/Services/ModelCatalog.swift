@@ -17,6 +17,11 @@ final class ModelCatalog: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage: String?
 
+    /// What each model says about its own languages, keyed by model name.
+    /// An empty set means "asked, and it makes no claim" — remembered so the
+    /// server is not asked again every time Settings is opened.
+    @Published private(set) var declaredLanguages: [String: Set<String>] = [:]
+
     private let service = OllamaService()
 
     /// Re-reads the model list. A failure leaves the previous list standing
@@ -39,5 +44,31 @@ final class ModelCatalog: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    /// Reads a model's own language declaration once and keeps it.
+    func refreshDeclaredLanguages(for model: String, settings: AppSettings) async {
+        guard !model.isEmpty, declaredLanguages[model] == nil else { return }
+
+        let declared: Set<String>?
+        do {
+            declared = try await service.declaredLanguageCodes(model: model, settings: settings)
+        } catch {
+            // A model that cannot be reached has not said anything either;
+            // it just has not said it yet, so nothing is cached.
+            return
+        }
+        declaredLanguages[model] = declared ?? []
+    }
+
+    /// The languages a model claims to handle: its own declaration where the
+    /// model file carries one, our hand-kept table where it does not, and
+    /// `nil` when neither has anything to say — in which case nothing should
+    /// be suggested at all.
+    func claimedLanguageCodes(for model: String) -> Set<String>? {
+        if let declared = declaredLanguages[model], !declared.isEmpty {
+            return declared
+        }
+        return ModelLanguageSupport.supportedCodes(forModel: model)
     }
 }

@@ -63,6 +63,62 @@ final class OllamaService {
         }
     }
 
+    /// The languages the model file itself declares, or `nil` if it makes no
+    /// claim this app can read.
+    ///
+    /// Read from `/api/show`'s `general.languages`, which carries over from
+    /// the model card's front matter when the GGUF is built. Whether it is
+    /// there depends entirely on the model: `llama3.1:8b` lists Meta's eight,
+    /// while `aya:latest` has no language key at all. So `nil` is an ordinary
+    /// answer meaning "did not say", never "supports none".
+    ///
+    /// Deliberately not asking the model itself, which was measured and is
+    /// worse than useless: aya names ten of its twenty-three languages,
+    /// llama3.1 claims forty-seven instead of eight. Wrong in both
+    /// directions, and each time in the direction that defeats the purpose.
+    func declaredLanguageCodes(model: String, settings: AppSettings) async throws -> Set<String>? {
+        guard let baseURL = settings.baseURL else {
+            throw OllamaServiceError.invalidServerAddress
+        }
+        guard !model.isEmpty else { return nil }
+
+        var request = URLRequest(url: baseURL.appendingPathComponent("api/show"))
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: ["model": model])
+
+        let (data, response) = try await session.data(for: request)
+        try Self.validate(response)
+
+        // Picked out by hand rather than decoded into a type: model_info is a
+        // grab bag whose keys differ per architecture, and one entry of it is
+        // all we want. The verbose variant of this endpoint would also return
+        // every tensor — five megabytes against thirty kilobytes — and the
+        // key we need is in the plain one.
+        guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let info = root["model_info"] as? [String: Any],
+              let declared = info["general.languages"] as? [Any] else { return nil }
+
+        let codes = declared
+            .compactMap { $0 as? String }
+            .compactMap(Self.normalizedLanguageCode)
+        return codes.isEmpty ? nil : Set(codes)
+    }
+
+    /// Model files spell languages inconsistently — "en", "zh-Hans" and
+    /// "pt_BR" have all been seen. Keeps the primary subtag, and only if it
+    /// names a language this app offers, so an unexpected spelling degrades
+    /// to "did not say" rather than to a confident wrong answer.
+    private static func normalizedLanguageCode(_ raw: String) -> String? {
+        guard let primary = raw.lowercased()
+            .split(whereSeparator: { $0 == "-" || $0 == "_" })
+            .first
+            .map(String.init),
+            Language.all.contains(where: { $0.code == primary })
+        else { return nil }
+        return primary
+    }
+
     func translate(
         text: String,
         from sourceLanguage: Language,
