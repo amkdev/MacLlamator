@@ -42,7 +42,7 @@ struct ContentView: View {
                 TranslationPaneView(
                     text: $sourceText,
                     isEditable: true,
-                    placeholder: "Enter text…",
+                    placeholder: String(localized: "Enter text…"),
                     onClear: { sourceText = "" }
                 )
 
@@ -51,7 +51,7 @@ struct ContentView: View {
                 TranslationPaneView(
                     text: $translatedText,
                     isEditable: false,
-                    placeholder: "Translation",
+                    placeholder: String(localized: "Translation"),
                     isLoading: isTranslating
                 )
             }
