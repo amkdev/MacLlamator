@@ -6,7 +6,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject private var settings: OllamaSettings
+    @EnvironmentObject private var settings: AppSettings
     private let service = OllamaService()
 
     @State private var availableModels: [OllamaModel] = []
@@ -47,7 +47,7 @@ struct SettingsView: View {
                     Text("Keep model in memory")
                     Spacer()
                     Picker("Keep model in memory", selection: $settings.keepAliveSeconds) {
-                        ForEach(OllamaSettings.keepAliveOptions, id: \.self) { seconds in
+                        ForEach(AppSettings.keepAliveOptions, id: \.self) { seconds in
                             Text(Self.keepAliveLabel(seconds)).tag(seconds)
                         }
                     }
@@ -200,5 +200,5 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
-        .environmentObject(OllamaSettings())
+        .environmentObject(AppSettings())
 }

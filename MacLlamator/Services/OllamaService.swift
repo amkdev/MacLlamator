@@ -45,7 +45,7 @@ final class OllamaService {
         self.session = session
     }
 
-    func fetchModels(settings: OllamaSettings) async throws -> [OllamaModel] {
+    func fetchModels(settings: AppSettings) async throws -> [OllamaModel] {
         guard let baseURL = settings.baseURL else {
             throw OllamaServiceError.invalidServerAddress
         }
@@ -67,7 +67,7 @@ final class OllamaService {
         text: String,
         from sourceLanguage: Language,
         to targetLanguage: Language,
-        settings: OllamaSettings
+        settings: AppSettings
     ) async throws -> TranslationResult {
         guard let baseURL = settings.baseURL else {
             throw OllamaServiceError.invalidServerAddress

@@ -6,7 +6,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject private var settings: OllamaSettings
+    @EnvironmentObject private var settings: AppSettings
     @Environment(\.openSettings) private var openSettings
 
     private let service = OllamaService()
@@ -253,6 +253,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environmentObject(OllamaSettings())
+        .environmentObject(AppSettings())
         .environmentObject(EditorFontSettings())
 }

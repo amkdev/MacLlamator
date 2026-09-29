@@ -1,14 +1,19 @@
 //
-//  OllamaSettings.swift
+//  AppSettings.swift
 //  MacLlamator
 //
 
 import Foundation
 import Combine
 
-/// Stores the connection details for the Ollama server and the currently
-/// selected model. Values are persisted in UserDefaults.
-final class OllamaSettings: ObservableObject {
+/// Everything the app remembers between launches: the Ollama connection and
+/// the chosen model, the two preferred languages, and the extra prompt
+/// instructions.
+///
+/// Persisted in UserDefaults. The keys keep their historical `ollama.` prefix
+/// even though the type is no longer Ollama-specific, so that existing
+/// installations keep their settings across the rename.
+final class AppSettings: ObservableObject {
     @Published var useLocal: Bool {
         didSet { UserDefaults.standard.set(useLocal, forKey: Keys.useLocal) }
     }

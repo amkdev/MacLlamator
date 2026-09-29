@@ -11,7 +11,7 @@ import SwiftUI
 struct MacLlamatorApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
-    @StateObject private var settings = OllamaSettings()
+    @StateObject private var settings = AppSettings()
     @StateObject private var fontSettings = EditorFontSettings()
 
     var body: some Scene {
