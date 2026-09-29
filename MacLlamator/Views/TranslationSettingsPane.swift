@@ -45,6 +45,29 @@ struct TranslationSettingsPane: View {
                 }
             }
 
+            SettingsSection("Automatic translation") {
+                Toggle("Translate while typing", isOn: $settings.autoTranslate)
+
+                Divider()
+
+                HStack {
+                    Text("Wait before translating")
+                    Spacer()
+                    Picker("Wait before translating", selection: $settings.autoTranslateDelayMs) {
+                        ForEach(AppSettings.autoTranslateDelayOptions, id: \.self) { milliseconds in
+                            Text(Self.delayLabel(milliseconds)).tag(milliseconds)
+                        }
+                    }
+                    .labelsHidden()
+                    .frame(width: 160)
+                }
+                .disabled(!settings.autoTranslate)
+
+                Text("How long the text has to stay unchanged before a translation is sent. With automatic translation switched off, nothing is sent until Cmd+Return asks for it.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             SettingsSection("Prompt") {
                 Text("Additional instructions for the model (optional), e.g. about tone or terminology.")
                     .font(.caption)
@@ -69,6 +92,14 @@ struct TranslationSettingsPane: View {
             }
         }
         .settingsPaneLayout()
+    }
+
+    private static func delayLabel(_ milliseconds: Int) -> String {
+        guard milliseconds >= 1000 else { return "\(milliseconds) ms" }
+        let seconds = Double(milliseconds) / 1000
+        return seconds == seconds.rounded()
+            ? "\(Int(seconds)) s"
+            : String(format: "%.1f s", seconds)
     }
 }
 

@@ -16,6 +16,9 @@ struct TranslationPaneView: View {
     var placeholder: String
     var isLoading: Bool = false
     var onClear: (() -> Void)? = nil
+    /// Set only when translation does not happen on its own; the pane then
+    /// offers the button that starts one.
+    var onTranslate: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -45,6 +48,14 @@ struct TranslationPaneView: View {
             Spacer(minLength: 0)
 
             HStack(spacing: 14) {
+                if let onTranslate {
+                    Button(action: onTranslate) {
+                        Label("Translate", systemImage: "arrow.right.circle.fill")
+                    }
+                    .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .help("Translate now (Cmd+Return)")
+                }
+
                 Spacer()
                 if isEditable, !text.isEmpty {
                     Button {

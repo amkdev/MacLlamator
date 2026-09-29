@@ -7,8 +7,8 @@ import Foundation
 import Combine
 
 /// Everything the app remembers between launches: the Ollama connection and
-/// the chosen model, the two preferred languages, and the extra prompt
-/// instructions.
+/// the chosen model, the two preferred languages, how eagerly it translates,
+/// and the extra prompt instructions.
 ///
 /// Persisted in UserDefaults. The keys keep their historical `ollama.` prefix
 /// even though the type is no longer Ollama-specific, so that existing
@@ -45,6 +45,20 @@ final class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(keepAliveSeconds, forKey: Keys.keepAliveSeconds) }
     }
 
+    /// Whether a translation is requested on its own as the text changes.
+    /// Turning it off matters with a large model, where every keystroke
+    /// otherwise starts an expensive request that the next keystroke cancels.
+    @Published var autoTranslate: Bool {
+        didSet { UserDefaults.standard.set(autoTranslate, forKey: Keys.autoTranslate) }
+    }
+
+    /// How long the text has to stay unchanged before an automatic
+    /// translation is sent, in milliseconds. Too short and a fast typist
+    /// sends a request per word; too long and the pane feels asleep.
+    @Published var autoTranslateDelayMs: Int {
+        didSet { UserDefaults.standard.set(autoTranslateDelayMs, forKey: Keys.autoTranslateDelayMs) }
+    }
+
     /// The two languages (as ISO codes) between which auto-detection should
     /// automatically flip the target language: detecting one of them selects
     /// the other as the target.
@@ -65,6 +79,10 @@ final class AppSettings: ObservableObject {
         static let preferredLanguageA = "ollama.preferredLanguageA"
         static let preferredLanguageB = "ollama.preferredLanguageB"
         static let keepAliveSeconds = "ollama.keepAliveSeconds"
+        // Settings added after the type stopped being Ollama-specific get a
+        // prefix that says what they actually configure.
+        static let autoTranslate = "translation.autoTranslate"
+        static let autoTranslateDelayMs = "translation.autoTranslateDelayMs"
     }
 
     init() {
@@ -77,10 +95,15 @@ final class AppSettings: ObservableObject {
         self.preferredLanguageA = defaults.string(forKey: Keys.preferredLanguageA) ?? "de"
         self.preferredLanguageB = defaults.string(forKey: Keys.preferredLanguageB) ?? "en"
         self.keepAliveSeconds = defaults.object(forKey: Keys.keepAliveSeconds) as? Int ?? 1800
+        self.autoTranslate = defaults.object(forKey: Keys.autoTranslate) as? Bool ?? true
+        self.autoTranslateDelayMs = defaults.object(forKey: Keys.autoTranslateDelayMs) as? Int ?? 500
     }
 
     /// Offered in Settings. Seconds, with `-1` meaning "until Ollama exits".
     static let keepAliveOptions: [Int] = [300, 1800, 3600, -1]
+
+    /// Offered in Settings, in milliseconds.
+    static let autoTranslateDelayOptions: [Int] = [300, 500, 1000, 2000]
 
     /// Base URL of the Ollama server, respecting the "local" toggle.
     var baseURL: URL? {

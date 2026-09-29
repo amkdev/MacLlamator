@@ -43,7 +43,8 @@ struct ContentView: View {
                     text: $sourceText,
                     isEditable: true,
                     placeholder: String(localized: "Enter text…"),
-                    onClear: { sourceText = "" }
+                    onClear: { sourceText = "" },
+                    onTranslate: manualTranslateAction
                 )
 
                 Divider()
@@ -57,6 +58,15 @@ struct ContentView: View {
             }
         }
         .frame(minWidth: 760, minHeight: 480)
+        // Cmd+Return translates whatever is in the pane right now, with the
+        // automatic run on or off. A keyboard shortcut needs a button to
+        // hang on, and this one has no business being visible: with the
+        // automatic run off there is already a labelled button in the pane.
+        .background {
+            Button("", action: translateNow)
+                .keyboardShortcut(.return, modifiers: .command)
+                .hidden()
+        }
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 modelMenu
@@ -83,6 +93,11 @@ struct ContentView: View {
         }
         .onChange(of: targetLanguage) { _, _ in
             scheduleTranslation(for: sourceText)
+        }
+        .onChange(of: settings.autoTranslate) { _, isOn in
+            // Switching the automatic run back on should catch up with the
+            // text that is already there, not wait for the next keystroke.
+            if isOn { scheduleTranslation(for: sourceText) }
         }
     }
 
@@ -241,11 +256,47 @@ struct ContentView: View {
             detectedLanguage = detected
         }
 
+        // With the automatic run off nothing is sent until it is asked for.
+        // Detection above still runs: it costs nothing and keeps the source
+        // language badge honest while typing.
+        guard settings.autoTranslate else { return }
+
         translationTask = Task {
-            try? await Task.sleep(for: .milliseconds(500))
+            try? await Task.sleep(for: .milliseconds(settings.autoTranslateDelayMs))
             guard !Task.isCancelled else { return }
             await performTranslation(text: text)
         }
+    }
+
+    /// Only offered while nothing translates on its own; with the automatic
+    /// run on, the button would sit there doing what has already happened.
+    /// Written as an early return rather than a conditional expression: a
+    /// conditional between `nil` and a method reference gives the type
+    /// checker nothing to work from and it gives up without a diagnosis.
+    private var manualTranslateAction: (() -> Void)? {
+        guard !settings.autoTranslate else { return nil }
+        return { translateNow() }
+    }
+
+    /// Translates at once, skipping the wait — the Cmd+Return path, and the
+    /// button that appears when nothing translates on its own.
+    private func translateNow() {
+        translationTask?.cancel()
+        errorMessage = nil
+
+        let trimmed = sourceText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            translatedText = ""
+            detectedLanguage = nil
+            isTranslating = false
+            return
+        }
+
+        if sourceLanguage == .auto, let detected = LanguageDetector.detect(trimmed) {
+            detectedLanguage = detected
+        }
+
+        translationTask = Task { await performTranslation(text: sourceText) }
     }
 
     private func performTranslation(text: String) async {
