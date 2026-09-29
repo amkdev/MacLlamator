@@ -15,41 +15,36 @@ import SwiftUI
 /// the app rather than look one thing up.
 struct KeyboardShortcutsView: View {
     private struct Shortcut: Identifiable {
-        let keys: String
+        /// Split into single keys so each can be drawn as its own cap, the
+        /// way a keyboard shows them.
+        let keys: [String]
         let action: LocalizedStringKey
-        var id: String { keys }
+        var id: String { keys.joined() }
     }
 
     private static let shortcuts: [Shortcut] = [
-        Shortcut(keys: "⌘↩", action: "Translate now"),
-        Shortcut(keys: "⇧⌘S", action: "Swap source and target language"),
-        Shortcut(keys: "⌘+", action: "Increase text size"),
-        Shortcut(keys: "⌘−", action: "Decrease text size"),
-        Shortcut(keys: "⌘,", action: "Open Settings"),
-        Shortcut(keys: "⌘W", action: "Hide the window; the menu bar icon brings it back"),
+        Shortcut(keys: ["⌘", "↩"], action: "Translate now"),
+        Shortcut(keys: ["⇧", "⌘", "S"], action: "Swap source and target language"),
+        Shortcut(keys: ["⌘", "+"], action: "Increase text size"),
+        Shortcut(keys: ["⌘", "−"], action: "Decrease text size"),
+        Shortcut(keys: ["⌘", ","], action: "Open Settings"),
+        Shortcut(keys: ["⌘", "W"], action: "Hide the window; the menu bar icon brings it back"),
     ]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Keyboard shortcuts")
-                .font(.headline)
-
-            VStack(alignment: .leading, spacing: 10) {
+            // No heading here: the window title already says what this is.
+            VStack(alignment: .leading, spacing: 12) {
                 ForEach(Self.shortcuts) { shortcut in
                     HStack(alignment: .firstTextBaseline, spacing: 16) {
-                        Text(shortcut.keys)
-                            // Fixed width and a monospaced face so the
-                            // symbols line up into a column instead of
-                            // stepping in and out with their own widths.
-                            .font(.system(.body, design: .monospaced))
-                            .frame(width: 54, alignment: .leading)
+                        keyCaps(shortcut.keys)
                         Text(shortcut.action)
                             .fixedSize(horizontal: false, vertical: true)
                         Spacer(minLength: 0)
                     }
                 }
             }
-            .padding(14)
+            .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background {
                 RoundedRectangle(cornerRadius: 10)
@@ -57,13 +52,38 @@ struct KeyboardShortcutsView: View {
             }
 
             Text("Translating and swapping are also in the Translation menu, which is where macOS shows their shortcuts.")
-                .font(.caption)
+                .font(.settingsNote)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(20)
-        .frame(width: 420)
+        .frame(width: 460)
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// Each key drawn as its own cap. A monospaced font was the first
+    /// attempt at lining the column up, but ⌘, ⇧ and ↩ are thin and poorly
+    /// drawn in monospaced faces — caps of a fixed width align just as well
+    /// and let the symbols keep the system font they were designed for.
+    private func keyCaps(_ keys: [String]) -> some View {
+        HStack(spacing: 4) {
+            ForEach(keys, id: \.self) { key in
+                Text(key)
+                    .font(.system(size: 14, weight: .medium))
+                    .frame(minWidth: 26, minHeight: 24)
+                    .background {
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(Color.primary.opacity(0.08))
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color.primary.opacity(0.15), lineWidth: 1)
+                            }
+                    }
+            }
+        }
+        // Reserves the width of the widest combination so the descriptions
+        // start on one line regardless of how many keys a row has.
+        .frame(width: 92, alignment: .leading)
     }
 }
 

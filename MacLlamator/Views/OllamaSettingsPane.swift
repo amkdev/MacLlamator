@@ -54,7 +54,7 @@ struct OllamaSettingsPane: View {
                 }
 
                 Text("Ollama unloads a model after five minutes by default, and the next translation then waits for it to be reloaded. A longer setting keeps it resident at the cost of the memory it occupies.")
-                    .font(.caption)
+                    .font(.settingsNote)
                     .foregroundStyle(.secondary)
             }
 
@@ -85,7 +85,7 @@ struct OllamaSettingsPane: View {
 
                     if let connectionError = catalog.errorMessage {
                         Text(connectionError)
-                            .font(.caption)
+                            .font(.settingsNote)
                             .foregroundStyle(.red)
                     }
                 }

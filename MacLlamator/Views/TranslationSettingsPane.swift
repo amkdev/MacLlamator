@@ -18,7 +18,7 @@ struct TranslationSettingsPane: View {
         VStack(alignment: .leading, spacing: 20) {
             SettingsSection("Preferred languages") {
                 Text("When automatic detection recognizes one of these two languages, the other is selected as the target language.")
-                    .font(.caption)
+                    .font(.settingsNote)
                     .foregroundStyle(.secondary)
 
                 HStack {
@@ -64,13 +64,13 @@ struct TranslationSettingsPane: View {
                 .frame(width: 220)
 
                 Text("How long the text has to stay unchanged before it is translated automatically. Switched off, nothing is sent until Cmd+Return asks for it.")
-                    .font(.caption)
+                    .font(.settingsNote)
                     .foregroundStyle(.secondary)
             }
 
             SettingsSection("Prompt") {
                 Text("Additional instructions for the model (optional), e.g. about tone or terminology.")
-                    .font(.caption)
+                    .font(.settingsNote)
                     .foregroundStyle(.secondary)
 
                 TextEditor(text: $settings.customInstructions)

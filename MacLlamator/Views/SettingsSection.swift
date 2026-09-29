@@ -35,7 +35,17 @@ struct SettingsSection<Content: View>: View {
     }
 }
 
-/// Shared geometry for both panes, so switching tabs does not change the
+extension Font {
+    /// The explanatory text under a setting.
+    ///
+    /// Defined once because it appears in every pane, and it started out as
+    /// `.caption` — ten points, which is a footnote size and was genuinely
+    /// hard to read. `.callout` is two points larger and still clearly
+    /// subordinate to the thirteen-point body text it explains.
+    static let settingsNote = Font.callout
+}
+
+/// Shared geometry for the panes, so switching tabs does not change the
 /// window's width.
 extension View {
     func settingsPaneLayout() -> some View {

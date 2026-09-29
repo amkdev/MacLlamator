@@ -16,7 +16,7 @@ struct LanguageSettingsPane: View {
         VStack(alignment: .leading, spacing: 20) {
             SettingsSection("Available languages") {
                 Text("Only the ticked languages appear in the pickers. Which ones are worth offering depends on the model and on what you actually translate — both of which you know better than the app does.")
-                    .font(.caption)
+                    .font(.settingsNote)
                     .foregroundStyle(.secondary)
 
                 languageList
