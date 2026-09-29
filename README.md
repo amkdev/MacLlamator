@@ -129,7 +129,7 @@ The app lands in `build/MacLlamator.xcarchive/Products/Applications/`. Use the `
 
 ## Configuration
 
-Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>. It has three tabs: **Ollama** for where translation runs, **Languages** for which ones are on offer, **Translation** for how it behaves.
+Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>. It has three tabs: **Ollama** for where translation runs, **Translation** for how it behaves, **Languages** for which ones are on offer.
 
 | Setting | Default | Notes |
 |---|---|---|
@@ -152,6 +152,8 @@ Everything is stored in `UserDefaults` under the `ollama.*`, `translation.*` and
 | <kbd>⌘</kbd><kbd>,</kbd> | Open Settings |
 | <kbd>⌘</kbd><kbd>↩</kbd> | Translate now, skipping the wait |
 | <kbd>⌘</kbd><kbd>⇧</kbd><kbd>S</kbd> | Swap source and target language |
+
+Translating and swapping also sit in the **Translation** menu, where macOS shows their shortcuts, and **Help → Keyboard shortcuts** lists the lot.
 | <kbd>⌘</kbd><kbd>+</kbd> | Increase text size |
 | <kbd>⌘</kbd><kbd>−</kbd> | Decrease text size |
 | <kbd>⌘</kbd><kbd>W</kbd> | Hide the window (the app keeps running in the menu bar) |
@@ -207,6 +209,7 @@ MacLlamator/
 │   ├── ModelCatalog.swift      The server's model list, shared by toolbar and Settings
 │   └── OllamaService.swift     HTTP client, prompt construction, parsing
 └── Views/
+    ├── KeyboardShortcutsView.swift   The list behind Help → Keyboard shortcuts
     ├── SettingsView.swift            Tab shell
     ├── OllamaSettingsPane.swift      Server and model
     ├── LanguageSettingsPane.swift    Which languages are on offer

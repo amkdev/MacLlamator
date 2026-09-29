@@ -126,6 +126,17 @@
         }
       }
     },
+    "Decrease text size": {
+      "comment": "Shortcut list entry",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schrift verkleinern"
+          }
+        }
+      }
+    },
     "Detect language": {
       "localizations": {
         "de": {
@@ -157,6 +168,17 @@
         }
       }
     },
+    "Hide the window; the menu bar icon brings it back": {
+      "comment": "Shortcut list entry",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fenster ausblenden; das Menüleistensymbol holt es zurück"
+          }
+        }
+      }
+    },
     "Host or IP address": {
       "localizations": {
         "de": {
@@ -178,6 +200,17 @@
         }
       }
     },
+    "Increase text size": {
+      "comment": "Shortcut list entry",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schrift vergrößern"
+          }
+        }
+      }
+    },
     "Invalid server address.": {
       "localizations": {
         "de": {
@@ -194,6 +227,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Modell im Speicher halten"
+          }
+        }
+      }
+    },
+    "Keyboard shortcuts": {
+      "comment": "Help menu entry and the title of the window it opens",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tastaturkürzel"
           }
         }
       }
@@ -379,6 +423,17 @@
         }
       }
     },
+    "Open Settings": {
+      "comment": "Shortcut list entry",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen öffnen"
+          }
+        }
+      }
+    },
     "Port": {
       "localizations": {
         "de": {
@@ -472,13 +527,24 @@
         }
       }
     },
-    "Swap languages (Cmd+Shift+S)": {
+    "Swap languages": {
       "comment": "Tooltip of the swap button in the language bar",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sprachen tauschen (Cmd+Shift+S)"
+            "value": "Sprachen tauschen"
+          }
+        }
+      }
+    },
+    "Swap source and target language": {
+      "comment": "Menu command and shortcut list entry",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quell- und Zielsprache tauschen"
           }
         }
       }
@@ -514,6 +580,17 @@
         }
       }
     },
+    "Translate now": {
+      "comment": "Menu command and shortcut list entry",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jetzt übersetzen"
+          }
+        }
+      }
+    },
     "Translate now (Cmd+Return)": {
       "comment": "Tooltip of the Translate button",
       "localizations": {
@@ -521,6 +598,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Jetzt übersetzen (Cmd+Return)"
+          }
+        }
+      }
+    },
+    "Translating and swapping are also in the Translation menu, which is where macOS shows their shortcuts.": {
+      "comment": "Footnote in the keyboard shortcuts window",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übersetzen und Tauschen stehen auch im Menü „Übersetzung“ — dort zeigt macOS ihre Kürzel an."
           }
         }
       }

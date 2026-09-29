@@ -58,15 +58,11 @@ struct ContentView: View {
             }
         }
         .frame(minWidth: 760, minHeight: 480)
-        // Cmd+Return translates whatever is in the pane right now, with the
-        // automatic run on or off. A keyboard shortcut needs a button to
-        // hang on, and this one has no business being visible: with the
-        // automatic run off there is already a labelled button in the pane.
-        .background {
-            Button("", action: translateNow)
-                .keyboardShortcut(.return, modifiers: .command)
-                .hidden()
-        }
+        // Handed to the scene so the menu bar can carry both commands. That
+        // is where a Mac user looks for a shortcut, and it replaces the
+        // invisible button the Cmd+Return shortcut used to hang on.
+        .focusedSceneValue(\.translateNow, translateAction)
+        .focusedSceneValue(\.swapLanguages, swapAction)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 modelMenu
@@ -157,11 +153,7 @@ struct ContentView: View {
             }
             .buttonStyle(.plain)
             .disabled(effectiveSourceLanguage == nil)
-            // The shortcut hangs on the button so it inherits the same
-            // disabled rule. It has no menu entry to be discovered from,
-            // which is what the tooltip is for.
-            .keyboardShortcut("s", modifiers: [.command, .shift])
-            .help("Swap languages (Cmd+Shift+S)")
+            .help("Swap languages")
             .padding(.horizontal, 16)
 
             languageMenu(
@@ -294,6 +286,21 @@ struct ContentView: View {
         }
     }
 
+    /// Handed to the menu bar. Written as closures with a declared type
+    /// rather than bare method references: a conditional between `nil` and a
+    /// method gives the type checker nothing to work from, and inline it
+    /// pushes the whole body past what it will attempt.
+    private var translateAction: (() -> Void)? {
+        { translateNow() }
+    }
+
+    /// Nil while no source language is known, which greys out the menu item
+    /// exactly as it disables the button in the language bar.
+    private var swapAction: (() -> Void)? {
+        guard effectiveSourceLanguage != nil else { return nil }
+        return { swapLanguages() }
+    }
+
     /// Only offered while nothing translates on its own; with the automatic
     /// run on, the button would sit there doing what has already happened.
     /// Written as an early return rather than a conditional expression: a
@@ -375,4 +382,27 @@ struct ContentView: View {
         .environmentObject(AppSettings())
         .environmentObject(EditorFontSettings())
         .environmentObject(ModelCatalog())
+}
+
+/// The two window commands the menu bar offers, handed up from whichever
+/// scene is in front. `nil` means the command is not available right now —
+/// swapping needs a known source language — and the menu greys out.
+extension FocusedValues {
+    var translateNow: (() -> Void)? {
+        get { self[TranslateNowKey.self] }
+        set { self[TranslateNowKey.self] = newValue }
+    }
+
+    var swapLanguages: (() -> Void)? {
+        get { self[SwapLanguagesKey.self] }
+        set { self[SwapLanguagesKey.self] = newValue }
+    }
+
+    private struct TranslateNowKey: FocusedValueKey {
+        typealias Value = () -> Void
+    }
+
+    private struct SwapLanguagesKey: FocusedValueKey {
+        typealias Value = () -> Void
+    }
 }
