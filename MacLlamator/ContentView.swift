@@ -36,6 +36,15 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
+            if let languageWarning {
+                Text(languageWarning)
+                    .font(.callout)
+                    .foregroundStyle(.orange)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
             Divider()
 
             HStack(spacing: 0) {
@@ -172,6 +181,24 @@ struct ContentView: View {
         .padding(.vertical, 10)
     }
 
+    /// Names the chosen languages the active model does not officially
+    /// cover. Stays `nil` for a model the table does not know, so an
+    /// unfamiliar model is never second-guessed.
+    private var languageWarning: String? {
+        var flagged: [String] = []
+        for language in [effectiveSourceLanguage, targetLanguage].compactMap({ $0 })
+        where ModelLanguageSupport.isUnsupported(language, by: settings.model) {
+            let name = language.displayName
+            if !flagged.contains(name) { flagged.append(name) }
+        }
+        guard !flagged.isEmpty else { return nil }
+
+        let names = ListFormatter.localizedString(byJoining: flagged)
+        return String(
+            localized: "\(settings.model) does not officially support \(names). Translating anyway may work, but nothing vouches for the result."
+        )
+    }
+
     /// The concrete language currently backing "automatisch erkennen" (once
     /// detected), or the explicitly selected source language otherwise.
     private var effectiveSourceLanguage: Language? {
@@ -195,8 +222,14 @@ struct ContentView: View {
                 Button {
                     onSelect(language)
                 } label: {
+                    // A menu item can carry one symbol, so the checkmark wins
+                    // where both would apply: which entry is selected matters
+                    // more inside an open menu, and the warning line under the
+                    // language bar says the rest once the menu is closed.
                     if language == selection {
                         Label(language.displayName, systemImage: "checkmark")
+                    } else if ModelLanguageSupport.isUnsupported(language, by: settings.model) {
+                        Label(language.displayName, systemImage: "exclamationmark.triangle")
                     } else {
                         Text(language.displayName)
                     }

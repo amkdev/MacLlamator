@@ -11,6 +11,17 @@
         }
       }
     },
+    "%@ does not officially support %@. Translating anyway may work, but nothing vouches for the result.": {
+      "comment": "Warning under the language bar; the model name first, then a list of language names",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ unterstützt %@ offiziell nicht. Eine Übersetzung kann trotzdem gelingen, verbürgt ist sie nicht."
+          }
+        }
+      }
+    },
     "1 hour": {
       "localizations": {
         "de": {
