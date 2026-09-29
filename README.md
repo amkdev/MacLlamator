@@ -132,6 +132,25 @@ The app lands in `build/MacLlamator.xcarchive/Products/Applications/`. Use the `
 
 Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>. It has three tabs: **Ollama** for where translation runs, **Translation** for how it behaves, **Languages** for which ones are on offer.
 
+<details>
+<summary><strong>The three Settings tabs</strong></summary>
+
+<br>
+
+**Ollama** — where translation runs: the server to reach and the model to run it on.
+
+![The Ollama tab of MacLlamator's Settings, showing the local server toggle, port, keep-alive setting and model picker](docs/settings-ollama.png)
+
+**Translation** — how it behaves: the preferred language pair, how eagerly it translates, and any extra instructions for the model.
+
+![The Translation tab, showing the preferred language pair, the automatic translation delay and the custom prompt box](docs/settings-translation.png)
+
+**Languages** — which languages the pickers offer. Ones the active model does not list carry a marker, and a button narrows the list to what it does.
+
+![The Languages tab, a checklist of languages with markers beside the ones aya does not officially cover](docs/settings-languages.png)
+
+</details>
+
 | Setting | Default | Notes |
 |---|---|---|
 | Local server | on | Forces `127.0.0.1`, ignoring the host field |
