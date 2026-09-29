@@ -238,6 +238,17 @@
         }
       }
     },
+    "Ollama": {
+      "comment": "Settings tab: server and model",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ollama"
+          }
+        }
+      }
+    },
     "Ollama Server": {
       "localizations": {
         "de": {
@@ -371,7 +382,7 @@
       }
     },
     "Translation": {
-      "comment": "Placeholder in the read-only result pane",
+      "comment": "Two uses, same word: the placeholder of the read-only result pane, and the title of the Settings tab holding the translation options.",
       "localizations": {
         "de": {
           "stringUnit": {
