@@ -8,7 +8,7 @@ A native macOS translation app that runs entirely against your own [Ollama](http
 
 Two panes side by side, translation as you type, and a menu bar icon to summon it over whatever you are working in. Think DeepL's window, but the model is yours.
 
-[![Download](https://img.shields.io/badge/download-v1.1.1-success)](https://github.com/amkdev/MacLlamator/releases/latest)
+[![Download](https://img.shields.io/badge/download-v1.2-success)](https://github.com/amkdev/MacLlamator/releases/latest)
 ![Built with Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-d97757)
 ![Platform: macOS 14+](https://img.shields.io/badge/platform-macOS%2014%2B-black)
 ![Universal binary](https://img.shields.io/badge/arch-arm64%20%2B%20x86__64-blue)
@@ -17,13 +17,15 @@ Two panes side by side, translation as you type, and a menu bar icon to summon i
 
 ## Features
 
-- **Translate as you type.** Input is debounced by 500 ms and each new request cancels the previous one, so a fast typist triggers one translation instead of twenty.
+- **Translate as you type — or only when you ask.** Input is debounced (500 ms by default, adjustable, or switched off entirely) and each new request cancels the previous one, so a fast typist triggers one translation instead of twenty. With automatic translation off nothing is sent until <kbd>⌘</kbd><kbd>↩</kbd> asks for it, which is what you want behind a model large enough that every keystroke costs something.
+- **The active model sits in the toolbar**, left of the gear, and switches from there. It decides what every translation is worth, so seeing or changing it should not mean a trip through Settings.
 - **Menu bar icon for instant access.** A status item sits in the macOS menu bar: one click brings the window up over whatever you are working in, another puts it away. Closing the window hides it instead of tearing it down, so the next click returns exactly what you had — text included.
 - **Automatic source-language detection, on-device.** Apple's `NLLanguageRecognizer` identifies the language locally rather than making the model detect and translate in one request, and the result appears in the source picker (`German (detected)`). Input too ambiguous to call keeps the previous detection instead of being guessed at, and a translation that comes back in the source language is flagged rather than passed off as one.
 - **A preferred language pair.** Pick two languages in Settings — when detection recognizes one of them, the other is selected as the target automatically. Typing German gives you English, typing English gives you German, with no menu fiddling.
-- **20 target languages**, from German and English through Japanese, Korean, Chinese and Arabic. Language names in the pickers come from macOS itself, so they appear in whatever language your system is set to.
+- **27 target languages**, from German and English through Greek, Hindi, Vietnamese and Arabic. Language names in the pickers come from macOS itself, so they appear in whatever language your system is set to.
+- **A warning when the model does not cover a language.** Aya officially handles 23 of the 27, so picking Swedish gets you a note under the language bar rather than a silent maybe. It warns instead of restricting: not being on a published list is not the same as not working.
 - **English and German interface.** The app follows your system language and falls back to English everywhere else.
-- **Swap direction** with one button, which also moves the current translation into the input pane so you can keep going.
+- **Swap direction** with one button or <kbd>⌘</kbd><kbd>⇧</kbd><kbd>S</kbd>, which also moves the current translation into the input pane so you can keep going.
 - **Copy and clear** buttons per pane. The result pane is read-only but stays fully selectable — it is a plain `NSTextView` rather than a disabled `TextEditor`, precisely so that selecting and copying keeps working.
 - **Adjustable text size** with <kbd>⌘</kbd><kbd>+</kbd> / <kbd>⌘</kbd><kbd>−</kbd> (12–32 pt), remembered across launches.
 - **Custom prompt instructions.** A free-form text box whose contents are appended to every translation prompt — useful for steering tone, enforcing terminology, or working around a particular model's habits.
@@ -95,7 +97,7 @@ You only need to do this once per installed version. Only run that command on so
 If you would rather verify the download first, each release lists the SHA-256 checksum of its archive:
 
 ```sh
-shasum -a 256 MacLlamator-1.1.1-universal.zip
+shasum -a 256 MacLlamator-1.2-universal.zip
 ```
 
 <details>
@@ -127,7 +129,7 @@ The app lands in `build/MacLlamator.xcarchive/Products/Applications/`. Use the `
 
 ## Configuration
 
-Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>.
+Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>. It has two tabs: **Ollama** for where translation runs, **Translation** for how it behaves.
 
 | Setting | Default | Notes |
 |---|---|---|
@@ -138,14 +140,18 @@ Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>.
 | Preferred languages | German / English | The pair that auto-detection flips between |
 | Prompt instructions | empty | Appended to every translation prompt |
 | Keep model in memory | 30 minutes | How long Ollama holds the model after a request; *Until Ollama quits* never unloads it |
+| Translate while typing | on | Off means nothing is sent until <kbd>⌘</kbd><kbd>↩</kbd> or the Translate button |
+| Wait before translating | 500 ms | How long the text must stay unchanged before an automatic translation is sent |
 
-Everything is stored in `UserDefaults` under the `ollama.*` and `editor.*` keys. Use **Refresh models** in Settings to re-read the model list after pulling something new.
+Everything is stored in `UserDefaults` under the `ollama.*`, `translation.*` and `editor.*` keys. Use **Refresh models** in Settings to re-read the model list after pulling something new.
 
 ## Keyboard shortcuts
 
 | Shortcut | Action |
 |---|---|
 | <kbd>⌘</kbd><kbd>,</kbd> | Open Settings |
+| <kbd>⌘</kbd><kbd>↩</kbd> | Translate now, skipping the wait |
+| <kbd>⌘</kbd><kbd>⇧</kbd><kbd>S</kbd> | Swap source and target language |
 | <kbd>⌘</kbd><kbd>+</kbd> | Increase text size |
 | <kbd>⌘</kbd><kbd>−</kbd> | Decrease text size |
 | <kbd>⌘</kbd><kbd>W</kbd> | Hide the window (the app keeps running in the menu bar) |
@@ -193,13 +199,18 @@ MacLlamator/
 ├── Localizable.xcstrings       String catalog (English source, German translations)
 ├── Models/
 │   ├── Language.swift          Supported languages, "auto" pseudo-language
-│   ├── OllamaSettings.swift    Server, model and prompt settings
+│   ├── AppSettings.swift       Server, model, languages and prompt settings
+│   ├── ModelLanguageSupport.swift  Which languages each model officially covers
 │   └── EditorFontSettings.swift
 ├── Services/
 │   ├── LanguageDetector.swift  On-device language detection (NaturalLanguage)
+│   ├── ModelCatalog.swift      The server's model list, shared by toolbar and Settings
 │   └── OllamaService.swift     HTTP client, prompt construction, parsing
 └── Views/
-    ├── SettingsView.swift
+    ├── SettingsView.swift            Tab shell
+    ├── OllamaSettingsPane.swift      Server and model
+    ├── TranslationSettingsPane.swift Languages, automatic translation, prompt
+    ├── SettingsSection.swift         Shared group styling
     └── TranslationPaneView.swift
 ```
 
@@ -210,6 +221,7 @@ Worth knowing before you try it:
 - **No streaming.** The translation appears when the model is done rather than word by word, so long inputs sit on a spinner for a while.
 - **No history.** Closing the window keeps the current text, quitting the app discards it.
 - **No tests yet.**
+- **The per-model language list is maintained by hand.** Nothing reports it: the GGUF metadata names the architecture and nothing else, and Ollama's `/api/show` passes through no language key at all. So the warning only knows the models listed in `ModelLanguageSupport` — anything else is never flagged, which is the honest answer but not a helpful one.
 - Translation quality is entirely the model's. A small model will produce small-model translations.
 
 ## Credits
