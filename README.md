@@ -26,6 +26,7 @@ Two panes side by side, translation as you type, and a menu bar icon to summon i
 - **A shortcut for the model's own list.** Where a model declares its languages, Settings offers to narrow the list to exactly those with one click: `llama3.1:8b` carries Meta's eight, so *Only what llama3.1:8b lists* leaves seven of the 27. Models that declare nothing fall back to a short table — `aya` is there — and models neither knows about are left alone rather than guessed at.
 - **English and German interface.** The app follows your system language and falls back to English everywhere else.
 - **Swap direction** with one button or <kbd>⌘</kbd><kbd>⇧</kbd><kbd>S</kbd>, which also moves the current translation into the input pane so you can keep going.
+- **Shortcuts where you look for them.** Translating and swapping are menu commands, so macOS draws their keys beside them, and Help lists every shortcut in one window.
 - **Copy and clear** buttons per pane. The result pane is read-only but stays fully selectable — it is a plain `NSTextView` rather than a disabled `TextEditor`, precisely so that selecting and copying keeps working.
 - **Adjustable text size** with <kbd>⌘</kbd><kbd>+</kbd> / <kbd>⌘</kbd><kbd>−</kbd> (12–32 pt), remembered across launches.
 - **Custom prompt instructions.** A free-form text box whose contents are appended to every translation prompt — useful for steering tone, enforcing terminology, or working around a particular model's habits.
@@ -59,7 +60,7 @@ Either way, fetch a model once:
 ollama pull aya              # recommended, see below
 ```
 
-**Recommended model: [`aya`](https://ollama.com/library/aya)** (8B, roughly 4.8 GB). Aya is built specifically for multilingual work, which is exactly what this app does, and it stays comfortable on an M1 — it is the model MacLlamator has been developed and tested against.
+**Recommended model: [`aya`](https://ollama.com/library/aya)** (8B, roughly 4.8 GB). Aya is built specifically for multilingual work, which is exactly what this app does, and it stays comfortable on Apple silicon — it is the model MacLlamator has been developed and tested against, on an M1 Max.
 
 It earns that spot on translation quality — see [tested models](#tested-models), where the same-size alternatives come out measurably worse.
 
@@ -152,11 +153,11 @@ Everything is stored in `UserDefaults` under the `ollama.*`, `translation.*` and
 | <kbd>⌘</kbd><kbd>,</kbd> | Open Settings |
 | <kbd>⌘</kbd><kbd>↩</kbd> | Translate now, skipping the wait |
 | <kbd>⌘</kbd><kbd>⇧</kbd><kbd>S</kbd> | Swap source and target language |
-
-Translating and swapping also sit in the **Translation** menu, where macOS shows their shortcuts, and **Help → Keyboard shortcuts** lists the lot.
 | <kbd>⌘</kbd><kbd>+</kbd> | Increase text size |
 | <kbd>⌘</kbd><kbd>−</kbd> | Decrease text size |
 | <kbd>⌘</kbd><kbd>W</kbd> | Hide the window (the app keeps running in the menu bar) |
+
+Translating and swapping also sit in the **Translation** menu, which is where macOS draws a shortcut beside its command. **Help → Keyboard shortcuts** lists all six in one window.
 
 ## How it works
 
