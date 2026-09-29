@@ -129,7 +129,7 @@ The app lands in `build/MacLlamator.xcarchive/Products/Applications/`. Use the `
 
 ## Configuration
 
-Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>. It has two tabs: **Ollama** for where translation runs, **Translation** for how it behaves.
+Open Settings with the gear button in the toolbar or <kbd>⌘</kbd><kbd>,</kbd>. It has three tabs: **Ollama** for where translation runs, **Languages** for which ones it offers, **Translation** for how it behaves.
 
 | Setting | Default | Notes |
 |---|---|---|
@@ -210,7 +210,8 @@ MacLlamator/
 └── Views/
     ├── SettingsView.swift            Tab shell
     ├── OllamaSettingsPane.swift      Server and model
-    ├── TranslationSettingsPane.swift Languages, automatic translation, prompt
+    ├── LanguageSettingsPane.swift    Available languages, preferred pair
+    ├── TranslationSettingsPane.swift Automatic translation, prompt
     ├── SettingsSection.swift         Shared group styling
     └── TranslationPaneView.swift
 ```

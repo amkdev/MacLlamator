@@ -84,6 +84,17 @@
         }
       }
     },
+    "Available languages": {
+      "comment": "Settings section title on the Languages tab",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verfügbare Sprachen"
+          }
+        }
+      }
+    },
     "Clear text": {
       "localizations": {
         "de": {
@@ -197,7 +208,7 @@
       }
     },
     "Languages": {
-      "comment": "Settings section: which languages appear in the pickers",
+      "comment": "Settings tab title",
       "localizations": {
         "de": {
           "stringUnit": {
