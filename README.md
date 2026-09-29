@@ -6,7 +6,7 @@
 
 A native macOS translation app that runs entirely against your own [Ollama](https://ollama.com) server — no cloud service, no API key, no text leaving your machine.
 
-Two panes side by side, translation as you type, and a menu bar icon to summon it over whatever you are working in. Think DeepL's window, but the model is yours.
+Two panes side by side, translation as you type, and a menu bar icon to summon it over whatever you are working in. A small, no-frills translator for everyday use — and the model behind it is yours.
 
 [![Download](https://img.shields.io/badge/download-v1.2-success)](https://github.com/amkdev/MacLlamator/releases/latest)
 ![Built with Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-d97757)

@@ -7,7 +7,7 @@ import SwiftUI
 import AppKit
 
 /// One column of the translator (either the editable source pane or the
-/// read-only result pane), styled after DeepL's layout.
+/// read-only result pane).
 struct TranslationPaneView: View {
     @EnvironmentObject private var fontSettings: EditorFontSettings
 
