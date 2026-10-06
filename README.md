@@ -8,7 +8,7 @@ A native macOS translation app that runs entirely against your own [Ollama](http
 
 Two panes side by side, translation as you type, and a menu bar icon to summon it over whatever you are working in. A small, no-frills translator for everyday use — and the model behind it is yours.
 
-[![Download](https://img.shields.io/badge/download-v1.2-success)](https://github.com/amkdev/MacLlamator/releases/latest)
+[![Download](https://img.shields.io/badge/download-v1.2.1-success)](https://github.com/amkdev/MacLlamator/releases/latest)
 ![Built with Claude Code](https://img.shields.io/badge/built%20with-Claude%20Code-d97757)
 ![Platform: macOS 14+](https://img.shields.io/badge/platform-macOS%2014%2B-black)
 ![Universal binary](https://img.shields.io/badge/arch-arm64%20%2B%20x86__64-blue)
@@ -108,7 +108,7 @@ You only need to do this once per installed version. Only run that command on so
 If you would rather verify the download first, each release lists the SHA-256 checksum of its archive:
 
 ```sh
-shasum -a 256 MacLlamator-1.2-universal.zip
+shasum -a 256 MacLlamator-1.2.1-universal.zip
 ```
 
 <details>
