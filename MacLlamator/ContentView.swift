@@ -150,6 +150,8 @@ struct ContentView: View {
                 swapLanguages()
             } label: {
                 Image(systemName: "arrow.left.arrow.right")
+                    .frame(width: 44, height: 28)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .disabled(effectiveSourceLanguage == nil)
