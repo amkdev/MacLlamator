@@ -22,6 +22,11 @@ struct ContentView: View {
     @State private var isTranslating = false
     @State private var errorMessage: String?
     @State private var translationTask: Task<Void, Never>?
+    /// Bumped on every new translation request, so a superseded request's
+    /// `defer` cleanup can tell it is stale and leave `isTranslating` alone
+    /// instead of racing the newer request's own loading state. Needed since
+    /// a cancelled request's cleanup still runs, just delayed, not skipped.
+    @State private var translationGeneration = 0
 
     var body: some View {
         VStack(spacing: 0) {
@@ -85,10 +90,10 @@ struct ContentView: View {
         }
         .onChange(of: sourceLanguage) { _, _ in
             detectedLanguage = nil
-            scheduleTranslation(for: sourceText)
+            scheduleTranslation(for: sourceText, immediate: true)
         }
         .onChange(of: targetLanguage) { _, _ in
-            scheduleTranslation(for: sourceText)
+            scheduleTranslation(for: sourceText, immediate: true)
         }
         .onChange(of: settings.enabledLanguageCodes) { _, _ in
             reconcileLanguageSelection()
@@ -255,7 +260,11 @@ struct ContentView: View {
         }
     }
 
-    private func scheduleTranslation(for text: String) {
+    /// `immediate` skips the debounce delay. It is meant for a discrete
+    /// action like switching a language, not for keystrokes — there is
+    /// nothing to wait out there, so waiting only makes the retranslation
+    /// feel sluggish.
+    private func scheduleTranslation(for text: String, immediate: Bool = false) {
         translationTask?.cancel()
         errorMessage = nil
 
@@ -281,10 +290,14 @@ struct ContentView: View {
         // language badge honest while typing.
         guard settings.autoTranslate else { return }
 
+        translationGeneration += 1
+        let generation = translationGeneration
         translationTask = Task {
-            try? await Task.sleep(for: .milliseconds(settings.autoTranslateDelayMs))
-            guard !Task.isCancelled else { return }
-            await performTranslation(text: text)
+            if !immediate {
+                try? await Task.sleep(for: .milliseconds(settings.autoTranslateDelayMs))
+                guard !Task.isCancelled else { return }
+            }
+            await performTranslation(text: text, generation: generation)
         }
     }
 
@@ -331,12 +344,21 @@ struct ContentView: View {
             detectedLanguage = detected
         }
 
-        translationTask = Task { await performTranslation(text: sourceText) }
+        translationGeneration += 1
+        let generation = translationGeneration
+        translationTask = Task { await performTranslation(text: sourceText, generation: generation) }
     }
 
-    private func performTranslation(text: String) async {
+    private func performTranslation(text: String, generation: Int) async {
         isTranslating = true
-        defer { isTranslating = false }
+        defer {
+            // A cancelled request's cleanup still runs, just delayed rather
+            // than skipped, so without this check it could clear the loading
+            // state out from under a newer request that is still in flight.
+            if generation == translationGeneration {
+                isTranslating = false
+            }
+        }
 
         // Hand the model the language we detected rather than asking it to
         // work that out as well: the single-task prompt is the one models get
