@@ -95,6 +95,13 @@ struct ContentView: View {
         .onChange(of: targetLanguage) { _, _ in
             scheduleTranslation(for: sourceText, immediate: true)
         }
+        .onChange(of: settings.model) { _, _ in
+            // The model is the one setting that decides what a translation is
+            // worth, so switching it is a request to see the same text done by
+            // the new one. Immediate for the same reason a language switch is:
+            // it is one discrete action, not typing to be waited out.
+            scheduleTranslation(for: sourceText, immediate: true)
+        }
         .onChange(of: settings.enabledLanguageCodes) { _, _ in
             reconcileLanguageSelection()
         }
